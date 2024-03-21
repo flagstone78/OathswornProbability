@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=New+Rocker&display=swap');
+
+body{
+    position: relative;
+    --cardColor:#fff0; /*default color for cards*/
+    --decal: url();/*added backgrounds for cards*/
+    --resetRatio:.4;
+    --mightRatio:.8;
+    --tileSize: min(calc(100cqmin/4), calc(100cqmax/5.4));
+    font-family:"New Rocker", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    scrollbar-gutter: stable;
+    background-image: url("../images/lightBackground.jpg");
+    background-position-x: center;
+    background-position-y: center;
+    background-attachment: fixed;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
+.cardui{
+    width:100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.hcontainer{
+    display:flex;
+    flex-direction: row;
+}
+
+.vcontainer{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mightcontainer{
+    display:flex; 
+    flex-direction: row;
+}
+
+.reset{
+    width: calc(var(--resetRatio)*var(--tileSize));
+    height: calc(var(--resetRatio)*var(--tileSize));
+    background-image: url("../images/reset.png");
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.value{
+    width:100%;
+    position:absolute;
+    bottom: 20%;
+    left: 0%;
+    font-size: 45cqmax;
+    color:rgb(72, 72, 72);
+}
+
+.count{
+    width:100%;
+    position:absolute;
+    bottom: 20%;
+    left: 0%;
+    color:rgb(72, 72, 72);
+    font-size: 10cqmax;
+}
+
+.mcount{
+    width:42%;
+    position:absolute;
+    bottom: 17%;
+    right: 8%;
+    color:rgb(72, 72, 72);
+    font-size: 40cqmax;
+}
+
+.white{
+    --cardColor:#ffff;
+}
+.yellow{
+    --cardColor:#fbd31aff;
+}
+
+.red{
+    --cardColor:#e42725ff
+}
+
+.black{
+    --cardColor:#25252aff
+}
+
+.crit{
+    --decal: url("../images/cardCrit.png");
+}
+
+.tile{
+    width: var(--tileSize);
+    height: var(--tileSize);
+}
+
+.card{
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-image: url("../images/cardSymbol.png"), var(--decal), radial-gradient(circle at 50% 52%, var(--cardColor) 37%,#000f 48%,#0000 50%);
+    container-type: size;
+    position: relative;
+    user-select: none;
+    text-align: center;
+}
+
+.might{
+    width: calc(var(--mightRatio)*var(--tileSize));
+    height: calc(var(--mightRatio)*var(--tileSize));
+    background-size: 100%;
+    background-repeat: no-repeat;
+    container-type: size;
+    container-type: size;
+    position: relative;
+    user-select: none;
+    text-align: center;
+    justify-content: center; 
+}
+
+.mWhite{
+    background-image: url("../images/white.png"); 
+}
+
+.mYellow{
+    background-image: url("../images/yellow.png"); 
+}
+
+.mRed{
+    background-image: url("../images/red.png"); 
+}
+
+.mBlack{
+    background-image: url("../images/black.png"); 
+}
+
+/* rotate card ui when screen becomes wider than tall */
+@media (min-aspect-ratio:1){
+    .vcontainer{
+        flex-direction: row;
+    }
+    .hcontainer{
+        flex-direction: column;
+    }
+
+}
+
+@media ((min-aspect-ratio:5/5.4) and (max-aspect-ratio:1)) or (min-aspect-ratio:6/4){
+    .mightcontainer{
+        flex-direction: column;
+    }
+    .cardui{
+        align-items: center;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: rgb(37, 37, 37);
+        background-image: url("../images/darkBackground.jpg");
+        color: rgb(210, 210, 210);
+    }
+}

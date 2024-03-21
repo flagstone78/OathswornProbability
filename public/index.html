@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/chart.css">
+</head>
+
+<body>
+    <div class="test"></div>
+
+<div class="cardui">
+    <div class="hcontainer">
+        <div class = "vcontainer">
+            <div class="white reset"></div>
+            <div id="w0" class="white card tile"><div class="value" style="display: none;">0</div><div class="count">0/6</div></div>
+            <div id="w1" class="white card tile"><div class="value">1</div><div class="count">0/6</div></div>
+            <div id="w2" class="white card tile"><div class="value">2</div><div class="count">0/3</div></div>
+            <div class="tile"></div>
+            <div id="wc" class="white crit card tile"><div class="value">2</div><div class="count">0/3</div></div>
+        </div>
+
+        <div class = "vcontainer">
+            <div class="yellow reset"></div>
+            <div id="y1" class="yellow card tile"><div class="value">1</div><div class="count">0/3</div></div>
+            <div id="y2" class="yellow card tile"><div class="value">2</div><div class="count">0/3</div></div>
+            <div id="y0" class="yellow card tile"><div class="value" style="display: none;">0</div><div class="count">0/6</div></div>
+            <div id="y3" class="yellow card tile"><div class="value">3</div><div class="count">0/3</div></div>
+            <div id="yc" class="yellow crit card tile"><div class="value">3</div><div class="count">0/3</div></div>
+        </div>
+
+        <div class = "vcontainer">
+            <div class="red reset"></div>
+            <div id="r0" class="red card tile"><div class="value" style="display: none;">0</div><div class="count">0/6</div></div>
+            <div id="r2" class="red card tile"><div class="value">2</div><div class="count">0/3</div></div>
+            <div id="r3" class="red card tile"><div class="value">3</div><div class="count">0/6</div></div>
+            <div class="tile"></div>
+            <div id="rc" class="red crit card tile"><div class="value">4</div><div class="count">0/3</div></div>
+        </div>
+
+        <div class = "vcontainer">
+            <div class="black reset"></div>
+            <div id="b0" class="black card tile"><div class="value" style="display: none;">0</div><div class="count">0/6</div></div>
+            <div id="b3" class="black card tile"><div class="value">3</div><div class="count">0/6</div></div>
+            <div id="b4" class="black card tile"><div class="value">4</div><div class="count">0/3</div></div>
+            <div class="tile"></div>
+            <div id="bc" class="black crit card tile"><div class="value">5</div><div class="count">0/3</div></div>
+        </div>
+    </div>
+
+    <div class="mightcontainer" >
+        <div id="mw" class="white mWhite might"><div class="mcount">2</div></div>
+        <div id="my" class="yellow mYellow might"><div class="mcount">2</div></div>
+        <div id="mr" class="red mRed might"><div class="mcount">2</div></div>
+        <div id="mb" class="black mBlack might"><div class="mcount">0</div></div>
+    </div>
+</div>
+
+<script type="module" src="scripts/arrayHelpers.mjs"></script>
+<script type="text/javascript" src="scripts/table.js"></script>
+<script type="module" src="scripts/monsterProb.mjs"></script>
+<script type="text/javascript" src="scripts/playerProb.js"></script>
+<script type="module" src="scripts/main.mjs"></script>
