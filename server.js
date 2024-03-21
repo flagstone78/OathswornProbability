@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const httpPort = 3000;
-const wsPort = 443;
+const wsPort = 3001;
 app.use(express.static('public'));
 app.use(express.static('rules'));
 app.listen(httpPort, () => console.log(`Listening on ${httpPort}`));

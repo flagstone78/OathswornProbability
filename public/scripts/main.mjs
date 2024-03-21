@@ -4,7 +4,7 @@ import{probCheckMonster} from "./monsterProb.mjs"
 
 const dUpdateStats = debounce(updateStats,100);
 
-let websocketPort = 443;
+let websocketPort = 3001;
 let hostname = location.hostname || "localhost";
 let socket = new WebSocket('ws://'+hostname+':'+websocketPort);
 // Connection opened
