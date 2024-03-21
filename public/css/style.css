@@ -17,6 +17,7 @@ body{
     background-attachment: fixed;
     background-size: 100% auto;
     background-repeat: no-repeat;
+    touch-action: manipulation;
 }
 
 .cardui{
@@ -54,43 +55,46 @@ body{
 .value{
     width:100%;
     position:absolute;
-    bottom: 20%;
+    bottom: 25%;
     left: 0%;
     font-size: 45cqmax;
-    color:rgb(72, 72, 72);
 }
 
 .count{
     width:100%;
     position:absolute;
-    bottom: 20%;
+    top:63%;
+    bottom: 0%;
     left: 0%;
-    color:rgb(72, 72, 72);
-    font-size: 10cqmax;
+    font-size: 14cqmax;
+    font-family: "fira-sans-2", Verdana, sans-serif;
 }
 
 .mcount{
-    width:42%;
+    width:20%;
     position:absolute;
     bottom: 17%;
-    right: 8%;
-    color:rgb(72, 72, 72);
+    right: 14%;
     font-size: 40cqmax;
 }
 
 .white{
-    --cardColor:#ffff;
+    --cardColor:#bbbbbb;
+    color:#111;
 }
 .yellow{
-    --cardColor:#fbd31aff;
+    --cardColor:rgb(198, 165, 20);
+    color: #222;
 }
 
 .red{
-    --cardColor:#e42725ff
+    --cardColor:rgb(206, 37, 34);
+    color: #222f;
 }
 
 .black{
-    --cardColor:#25252aff
+    --cardColor:#25252aff;
+    color: #888f;
 }
 
 .crit{
@@ -123,6 +127,7 @@ body{
     user-select: none;
     text-align: center;
     justify-content: center; 
+    filter:brightness(80%);
 }
 
 .mWhite{

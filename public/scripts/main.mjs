@@ -4,38 +4,53 @@ import{probCheckMonster} from "./monsterProb.mjs"
 
 const dUpdateStats = debounce(updateStats,100);
 
+
 let websocketPort = 3001;
 let hostname = location.hostname || "localhost";
-let socket = new WebSocket('ws://'+hostname+':'+websocketPort);
-// Connection opened
-socket.addEventListener("open", (event) => {
-    //socket.send("Hello Server!");
-});
-  
-// Listen for messages
-socket.addEventListener("message", (event) => {
-    console.log("Message from server ", event.data);
-    try{
-        let arr = JSON.parse(event.data);
-        if(arr.length==3) recieveFromAll(...arr);
-    } catch{}
-});
+let bypassWebSocket = false;
 
-// Listen for error
-socket.addEventListener("error", (event) => {
-    console.log("Websocket Error");
-});
+function connectSocket(){
+    let socket =  new WebSocket('ws://'+hostname+':'+websocketPort);
+    // Connection opened
+    socket.addEventListener("open", (event) => {
+        //socket.send("Hello Server!");
+    });
+    
+    // Listen for messages
+    socket.addEventListener("message", (event) => {
+        console.log("Message from server ", event.data);
+        try{
+            let arr = JSON.parse(event.data);
+            if(arr.length==3) recieveFromAll(...arr);
+        } catch{}
+    });
 
-// Listen for error
-socket.addEventListener("close", (event) => {
-    console.log("Websocket closed");
-});
+    // Listen for error
+    socket.addEventListener("error", (event) => {
+        console.log("Websocket Error");
+        bypassWebSocket = true;
+    });
+
+    // Listen for error
+    socket.addEventListener("close", (event) => {
+        console.log("Websocket closed");
+    });
+    return socket;
+}
+
+let socket = connectSocket();
+
+window.onfocus = (e)=>{
+    if(socket.readyState != socket.OPEN) socket = connectSocket();
+}
 
 function syncToAll(id,key,value){
-    if(socket.readyState==socket.OPEN){
-        socket.send(JSON.stringify([id,key,value]));
+    if(bypassWebSocket){
+       recieveFromAll(id,key,value);
+    } else if(socket.readyState!=socket.OPEN){
+        socket = connectSocket();
     } else { //pass through to recieve function
-        recieveFromAll(id,key,value);
+        socket.send(JSON.stringify([id,key,value]));
     }
 }
 

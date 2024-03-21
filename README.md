@@ -2,11 +2,10 @@
  Web app for card counting the decks in Oathsworn and calculating the probability of action outcomes
 
 # to run
-For a single user: open /public/index.html
-For muliple users start the web server by: 
 	set http and ws ports to be used in server.js and /public/index.html
 	run: npm install
 	run: npm start
+	view at http://localhost:3000
 	port forward http and ws ports if accessing from another network
 
 
