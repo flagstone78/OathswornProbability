@@ -196,7 +196,7 @@ function updateUI(res){
     loadTableGraphic("Chance Graph of at least x", [chanceAtleast,chanceAtleastMaxRemoved], false);
     loadTableGraphic("Chance Graph of exactly x", [res.prob,res.probMaxRemoved],false);
     loadTableList("Chance Table of at least y or more",[chanceAtleast,chanceAtleastMaxRemoved,], ['y','% to get y+','% to get y+, max removed'], false);
-    loadTableList("Chance Table of exactly y",[res.prob,res.probMaxRemoved], ['y','% to get x','% to get x, max removed'], false);
+    loadTableList("Chance Table of exactly y",[res.prob,res.probMaxRemoved], ['y','% to get y','% to get y, max removed'], false);
 
     let defense = Array.fromRange(1,18,1); //calculate for defense values between 2 and 10
     let damageProb = defense.map((e)=>{return res.prob.collectBy((index)=>Math.floor(index/e))});
