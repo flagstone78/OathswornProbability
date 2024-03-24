@@ -28,13 +28,10 @@ function connectSocket(){
                 } catch{console.log("invalid json from server", event.data)}
             });
 
-            // Listen for error
             s.addEventListener("error", (event) => {
-                console.log("Websocket Error");
                 reject(event);
             });
 
-            // Listen for error
             s.addEventListener("close", (event) => {
                 console.log("Websocket closed");
             });
@@ -196,19 +193,22 @@ function startWork(fcn, functionFile, parameters, callBackFcn){
 function updateUI(res){
     let chanceAtleast = res.prob.reversecumsum();
     let chanceAtleastMaxRemoved = res.probMaxRemoved.reversecumsum();
-    loadTableGraphic("Chance of at least x", [chanceAtleast,chanceAtleastMaxRemoved]);
-    loadTableGraphic("Chance of exactly x", [res.prob,res.probMaxRemoved],false);
-    loadTableList("Chance Table",[chanceAtleast,chanceAtleastMaxRemoved,res.prob,res.probMaxRemoved], ['x','% to get x+','% to get x+ mr','% to get x','% to get x mr'], false);
+    loadTableGraphic("Chance Graph of at least x", [chanceAtleast,chanceAtleastMaxRemoved], false);
+    loadTableGraphic("Chance Graph of exactly x", [res.prob,res.probMaxRemoved],false);
+    loadTableList("Chance Table of at least y or more",[chanceAtleast,chanceAtleastMaxRemoved,], ['y','% to get y+','% to get y+, max removed'], false);
+    loadTableList("Chance Table of exactly y",[res.prob,res.probMaxRemoved], ['y','% to get x','% to get x, max removed'], false);
 
-    let defense = Array.fromRange(1,10,1); //calculate for defense values between 2 and 10
-    let damageProb = defense.map((e)=>{return res.prob.collectBy(e);});
-    let damageProbCumulative = damageProb.map(d=>{return d.cumsum();})
-    let damageProbMaxRemoved = defense.map((e)=>{return res.probMaxRemoved.collectBy(e);});
-    let damageProbCumulativeMaxRemoved = damageProbMaxRemoved.map(d=>{return d.cumsum();})
-    loadTableList("Chance of y Damage or Less given x Defense",damageProbCumulative, ['defense → <br> damage⤵', ...defense],true);
-    loadTableList("Chance of y Damage or Less given x Defense (max removed)",damageProbCumulativeMaxRemoved, ['defense → <br> damage⤵', ...defense],false);
-    loadTableList("Chance of y Damage given x Defense",damageProb, ['defense → <br> damage⤵', ...defense],false);
-    loadTableList("Chance of y Damage given x Defense (max removed)",damageProbMaxRemoved, ['defense → <br> damage⤵', ...defense],false);
+    let defense = Array.fromRange(1,18,1); //calculate for defense values between 2 and 10
+    let damageProb = defense.map((e)=>{return res.prob.collectBy((index)=>Math.floor(index/e))});
+    let damageProbMaxRemoved = defense.map((e)=>{return res.probMaxRemoved.collectBy((index)=>Math.floor(index/e))});
+
+    let damageProbT = damageProb.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
+    let damageProbTmr = damageProbMaxRemoved.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
+
+    loadTableList("Chance of y Damage given x Defense",damageProbT, ['defense → <br> damage⤵', ...defense],true);
+    loadTableList("Chance of y Damage given x Defense (max removed)",damageProbTmr, ['defense → <br> damage⤵', ...defense],false);
+    loadTableList("Chance of y Damage given x Defense Full Table",damageProb, ['defense → <br> damage⤵', ...defense],false);
+    loadTableList("Chance of y Damage given x Defense Full Table (max removed)",damageProbMaxRemoved, ['defense → <br> damage⤵', ...defense],false);
 }
 
 //called every time the ui changes (with debounce)

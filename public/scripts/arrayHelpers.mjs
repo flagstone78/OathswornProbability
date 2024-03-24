@@ -11,9 +11,9 @@ function applyArrayHeperFuncions(){
     }});
 
 
-    Object.defineProperty(Array.prototype,'collectBy',{value: function(collectSize){
+    Object.defineProperty(Array.prototype,'collectBy',{value: function(collectFcn){
         return this.reduce((prev,cur,index)=>{
-            let groupNum = Math.floor(index/collectSize);
+            let groupNum = collectFcn(index);//Math.floor(index/collectSize);
             prev[groupNum]? prev[groupNum]+=cur : prev[groupNum]=cur;
             return prev;
         },[]);

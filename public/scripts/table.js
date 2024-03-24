@@ -16,16 +16,16 @@
     </table>
 </div> */
 
-let invalidIdChars = /[\s()]/g;
+let invalidIdChars = /[\s(),]/g;
 
-function barChartHtml(chartid){
+function barChartHtml(chartName, chartid){
     if((invalidIdChars).test(chartid)) throw "bar chart id cannot contain spaces";
     let elem = document.createElement('div');
     elem.className = "barChart";
     elem.id = chartid;
     elem.innerHTML = 
         `<table>
-            <caption onclick="toggleTable(this)">${chartid.replaceAll('_', ' ')}</caption>
+            <caption onclick="toggleTable(this)">${chartName}</caption>
             <tbody>
                 <tr class="bars"></tr>
                 <tr class="values"></tr>
@@ -35,11 +35,11 @@ function barChartHtml(chartid){
 }
 
 //objArr in the form of [{x1:y1, x2:y2},{x1:y1, x3:y3}]
-function loadTableGraphic(tableId, objArr, toShow=true) {
-    tableId = tableId.replaceAll(invalidIdChars,'_');
-    let table = document.querySelector('#'+tableId);
+function loadTableGraphic(chartName, objArr, toShow=true) {
+    let chartId = chartName.replaceAll(invalidIdChars,'_');
+    let table = document.querySelector('#'+chartId);
     if(!table){
-        table = barChartHtml(tableId);
+        table = barChartHtml(chartName, chartId);
         if(!toShow) table.querySelector('tbody').style.display='none';
         document.body.appendChild(table);
     }
@@ -74,22 +74,22 @@ function loadTableGraphic(tableId, objArr, toShow=true) {
 </table>
 </div> */
 
-function tableHtml(chartid){
-    if((/\s/).test(chartid)) throw "bar chart id cannot contain spaces";
+function tableHtml(tableName, tableid){
+    if((invalidIdChars).test(tableid)) throw "bar chart id cannot contain spaces";
     let elem = document.createElement('table');
     elem.className = "dataTable";
-    elem.id = chartid;
+    elem.id = tableid;
     elem.innerHTML = 
-        `<caption onclick="toggleTable(this)">${chartid.replaceAll('_', ' ')}</caption>
+        `<caption onclick="toggleTable(this)">${tableName}</caption>
         <tbody></tbody>`;
     return elem;
 }
 
-function loadTableList(tableId, objArr, colHeader, toShow=true) {
-    tableId = tableId.replaceAll(invalidIdChars,'_');
+function loadTableList(tableName, objArr, colHeader, toShow=true) {
+    let tableId = tableName.replaceAll(invalidIdChars,'_');
     let table = document.querySelector('#'+tableId);
     if(!table){
-        table = tableHtml(tableId);
+        table = tableHtml(tableName, tableId);
         if(!toShow) table.querySelector('tbody').style.display='none';
         document.body.appendChild(table);
     }

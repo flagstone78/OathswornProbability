@@ -89,8 +89,8 @@
 }
 
 .dataTable td{
-    padding-right: 1cqi;
-    padding-left: 1cqi;
+    padding-right: 0.5cqi;
+    padding-left: 0.5cqi;
 }
 
 .dataTable tr{
