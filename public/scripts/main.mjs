@@ -2,56 +2,61 @@ import {applyArrayHeperFuncions, debounce, objectMap} from "./arrayHelpers.mjs"
 applyArrayHeperFuncions();
 import{probCheckMonster} from "./monsterProb.mjs"
 
-const dUpdateStats = debounce(updateStats,100);
-
+const dUpdateStats = debounce(updateStats,10);
 
 let websocketPort = 3001;
 let hostname = location.hostname || "localhost";
-let bypassWebSocket = false;
 
+let socket={};
 function connectSocket(){
-    let socket =  new WebSocket('ws://'+hostname+':'+websocketPort);
-    // Connection opened
-    socket.addEventListener("open", (event) => {
-        //socket.send("Hello Server!");
-    });
-    
-    // Listen for messages
-    socket.addEventListener("message", (event) => {
-        console.log("Message from server ", event.data);
-        try{
-            let arr = JSON.parse(event.data);
-            if(arr.length==3) recieveFromAll(...arr);
-        } catch{}
-    });
+    return new Promise((resolve, reject)=>{
+        //double check that the socket is open (websocket will close after a minute of inactivity)
+        if(socket.readyState == WebSocket.OPEN) resolve(socket);
+        else {
+            let s =  new WebSocket('ws://'+hostname+':'+websocketPort);
+            // Connection opened
+            s.addEventListener("open", (event) => {
+                resolve(s);
+            });
+            
+            // Listen for messages
+            s.addEventListener("message", (event) => {
+                console.log("Message from server ", event.data);
+                try{
+                    let arr = JSON.parse(event.data);
+                    if(arr.length==3) recieveFromAll(...arr);
+                } catch{console.log("invalid json from server", event.data)}
+            });
 
-    // Listen for error
-    socket.addEventListener("error", (event) => {
-        console.log("Websocket Error");
-        bypassWebSocket = true;
-    });
+            // Listen for error
+            s.addEventListener("error", (event) => {
+                console.log("Websocket Error");
+                reject(event);
+            });
 
-    // Listen for error
-    socket.addEventListener("close", (event) => {
-        console.log("Websocket closed");
+            // Listen for error
+            s.addEventListener("close", (event) => {
+                console.log("Websocket closed");
+            });
+
+            socket = s;
+        }
     });
-    return socket;
 }
 
-let socket = connectSocket();
+await connectSocket().catch(e=>{console.error("Could not connect to socket at beginning",e)});
 
-window.onfocus = (e)=>{
-    if(socket.readyState != socket.OPEN) socket = connectSocket();
+window.onfocus = async ()=>{
+    await connectSocket().catch(e=>{console.error("Could not reconnect to socket on window focus",e)});
 }
 
-function syncToAll(id,key,value){
-    if(bypassWebSocket){
-       recieveFromAll(id,key,value);
-    } else if(socket.readyState!=socket.OPEN){
-        socket = connectSocket();
-    } else { //pass through to recieve function
-        socket.send(JSON.stringify([id,key,value]));
-    }
+async function syncToAll(id,key,value){
+    recieveFromAll(id,key,value); //send to self, server will only send to others
+    await connectSocket().then(
+        s => s.send(JSON.stringify([id,key,value])),
+    ).catch(
+        e => console.error("Could not reconnect before sending value",e)
+    );
 }
 
 function recieveFromAll(id,key,value){
@@ -101,6 +106,14 @@ function getMightClickFcn(currentColor){
 }
 function getMightCounterClickFcn(currentColor){
     return e=>{syncToAll(currentColor.id,'toDraw', currentColor.toDraw-1);e.stopPropagation();};
+}
+function getResetClickFcn(resetElement){
+    return e=>{
+        let color = resetElement.classList[0];
+        cardsByColors[color].forEach(
+            card=>{syncToAll(card.id,'numInDiscard', 0);}
+        );
+    }
 }
 
 const cardsById = Array.from(document.querySelectorAll(".card")).reduce((out,current)=>{
@@ -159,13 +172,7 @@ const cardsByColors = (()=>{
 
 
 Array.from(document.querySelectorAll(".reset")).forEach(re=>{
-    re.addEventListener('click',e=>{
-        let color = re.classList[0];
-        cardsByColors[color].forEach(card=>{
-            //card.numInDiscard=0;
-            syncToAll(card.id,'numInDiscard', 0); 
-        });
-    });
+    re.addEventListener('click',getResetClickFcn(re));
 })
 
 //puts heavy calculation on the webworker. falls back to running inline

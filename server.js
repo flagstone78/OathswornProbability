@@ -6,17 +6,20 @@ app.use(express.static('public'));
 app.use(express.static('rules'));
 app.listen(httpPort, () => console.log(`Listening on ${httpPort}`));
 
+let clientIdCounter = new Uint8Array(1); //max of 256 connections
 const { WebSocketServer } = require('ws')
 const sockserver = new WebSocketServer({ port: wsPort })
 sockserver.on('connection', ws => {
   console.log('New client connected!')
+  let id = clientIdCounter[0]++;
+  ws.clientId = id;
   ws.send('connection established')
   ws.on('close', () => console.log('Client has disconnected!'))
   ws.on('message', data => {
     storeData(data);
     console.log(`distributing message: ${data}`)
     sockserver.clients.forEach(client => {
-      client.send(`${data}`)
+        if(client.clientId != id) client.send(`${data}`)
     })
   })
   ws.onerror = function () {
