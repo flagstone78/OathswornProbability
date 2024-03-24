@@ -7,9 +7,6 @@ body{
     --resetRatio:.4;
     --mightRatio:.8;
     --tileSize: min(calc(100cqmin/4), calc(100cqmax/5.4));
-    font-family:"New Rocker", system-ui;
-    font-weight: 400;
-    font-style: normal;
     scrollbar-gutter: stable;
     background-image: url("../images/lightBackground.jpg");
     background-position-x: center;
@@ -55,9 +52,13 @@ body{
 .value{
     width:100%;
     position:absolute;
-    bottom: 25%;
-    left: 0%;
+    top:0;
+    bottom: 37%;
     font-size: 45cqmax;
+    font-family:"New Rocker", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    margin-top:20cqmax;
 }
 
 .count{
