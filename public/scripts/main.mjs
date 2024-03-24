@@ -48,21 +48,25 @@ window.onfocus = async ()=>{
 }
 
 async function syncToAll(id,key,value){
-    recieveFromAll(id,key,value); //send to self, server will only send to others
-    await connectSocket().then(
-        s => s.send(JSON.stringify([id,key,value])),
-    ).catch(
-        e => console.error("Could not reconnect before sending value",e)
-    );
+    let v = recieveFromAll(id,key,value); //send to self, server will only send to others
+    if(v == value){ //property was set succesfully
+        await connectSocket().then(
+            s => s.send(JSON.stringify([id,key,value])),
+        ).catch(
+            e => console.error("Could not reconnect before sending value",e)
+        );
+    }
 }
 
 function recieveFromAll(id,key,value){
     switch(key){
         case 'numInDiscard':
             if(cardsById[id] != undefined && Number.isInteger(value)) cardsById[id][key] = value;
+            return cardsById[id][key];
             break;
         case 'toDraw':
             if(cardsByColors[id] != undefined && Number.isInteger(value)) cardsByColors[id][key] = value;
+            return cardsByColors[id][key];
             break;
     }
 }
