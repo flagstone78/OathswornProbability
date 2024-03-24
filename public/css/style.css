@@ -55,20 +55,20 @@ body{
 .value{
     width:100%;
     position:absolute;
-    top:0;
-    bottom: 37%;
+    top:24%;
     font-size: 45cqmax;
-    margin-top:20cqmax;
 }
 
 .count{
-    width:100%;
     position:absolute;
-    top:63%;
     bottom: 0%;
-    left: 0%;
+    left: 10%;
+    right:60%;
     font-size: 14cqmax;
     font-family: "fira-sans-2", Verdana, sans-serif;
+    background-color: #fff9;
+    border-radius: 5cqmax;
+    color:black;
 }
 
 .mcount{
