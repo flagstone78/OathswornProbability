@@ -16,7 +16,7 @@
     </table>
 </div> */
 
-let invalidIdChars = /[\s(),]/g;
+let invalidIdChars = /[\s(),<>]/g;
 
 function barChartHtml(chartName, chartid){
     if((invalidIdChars).test(chartid)) throw "bar chart id cannot contain spaces";
@@ -63,8 +63,8 @@ function loadTableGraphic(chartName, objArr, toShow=true) {
     table.querySelector('.values').innerHTML = headers;
 }
 
-/* <div>
-<table id="monsterTableList" class="dataTable">
+/* <div id="monsterTableList" class="dataTable">
+<table>
     <caption onclick="toggleTable(this)" style="white-space: nowrap;">Chance of y Damage or Less given x Defence</caption>
     <tbody>
         <tr><th>axis labels</th> <th>x1 label</th> <th>x2 label</th> <th>x3 label</th></tr>
@@ -76,12 +76,15 @@ function loadTableGraphic(chartName, objArr, toShow=true) {
 
 function tableHtml(tableName, tableid){
     if((invalidIdChars).test(tableid)) throw "bar chart id cannot contain spaces";
-    let elem = document.createElement('table');
+    let elem = document.createElement('div');
     elem.className = "dataTable";
     elem.id = tableid;
     elem.innerHTML = 
-        `<caption onclick="toggleTable(this)">${tableName}</caption>
-        <tbody></tbody>`;
+        `<table>
+        <caption onclick="toggleTable(this.parentElement)"><span>${tableName}</span></caption>
+        <thead></thead>
+        <tbody></tbody>
+        </table>`;
     return elem;
 }
 
@@ -90,8 +93,8 @@ function loadTableList(tableName, objArr, colHeader, toShow=true) {
     let table = document.querySelector('#'+tableId);
     if(!table){
         table = tableHtml(tableName, tableId);
-        if(!toShow) table.querySelector('tbody').style.display='none';
         document.body.appendChild(table);
+        if(!toShow) toggleTable(table);//table.querySelector('tbody').style.display='none';
     }
 
     let keys = new Set();
@@ -100,25 +103,31 @@ function loadTableList(tableName, objArr, colHeader, toShow=true) {
         if(Number.isNaN(n)){keys.add(k);}else{keys.add(n);}
     })});
 
-    let keysSorted = Array.from(keys).sort((a,b)=>a-b);
-
-    let tableData = '';
-
     if(colHeader!=undefined){
-            colHeader.forEach(h=>{
-            tableData += '<th>';
-            tableData += h;
-            tableData += '</th>';
+        let headerData = ''
+        colHeader.forEach(h=>{
+            headerData += '<th>';
+            headerData += h;
+            headerData += '</th>';
         });
+        table.querySelector('thead').innerHTML = headerData;
     }
 
+    let keysSorted = Array.from(keys).sort((a,b)=>a-b);
+    let tableData = '';
     keysSorted.forEach(k=>{
         tableData += '<tr>'
         tableData += '<th>' + k + '</th>';
         objArr.forEach(e => {
-            tableData += '<td align="right">';
-            if(e[k]!= undefined) tableData += e[k].toFixed(2);
-            tableData += '</td>';
+            
+            if(e[k]!= undefined) {
+                let c = 255-255*e[k]/100;
+                tableData += `<td style="color:rgb(255,${c},${c});">`;
+                tableData += e[k].toFixed(2);
+                tableData += '</td>';
+            } else {
+                tableData += '<td></td>'
+            }
         });
         tableData += '</tr>';
     });
@@ -127,10 +136,13 @@ function loadTableList(tableName, objArr, colHeader, toShow=true) {
 }
 
 function toggleTable(e){
-    let tbody = e.parentElement.querySelector('tbody');
+    let tbody = e.querySelector('tbody');
+    let thead = e.querySelector('thead');
     if(tbody.checkVisibility()){
         tbody.style.display='none';
+        thead.style.display='none';
     } else {
         tbody.style.display='';
+        thead.style.display='';
     }
 }

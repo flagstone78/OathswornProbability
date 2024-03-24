@@ -71,8 +71,24 @@
 
 .dataTable{
     font-family: "fira-sans-2", Verdana, sans-serif;
-    font-size: 1cqi;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color:  rgb(75,75,75) rgb(25,25,25);
+    display: inline-block;
+    max-width: 100%;
+    margin:1cqi;
+}
+
+.dataTable table{
     border-collapse: collapse;
+}
+
+.dataTable table th:first-child{
+    position: sticky;
+    left: 0;
+    border: none;
+    background-color: inherit;
+    text-align: right;
 }
 
 .dataTable caption{
@@ -82,20 +98,27 @@
     text-align: left;
 }
 
+.dataTable caption span{
+    position: sticky;
+    left:0;
+}
+
 .dataTable th{
     border: 1px solid rgb(71, 71, 71);
     padding-right: 1cqi;
     padding-left: 1cqi;
+    /* background-color: rgb(25, 25, 25); */
 }
 
 .dataTable td{
-    padding-right: 0.5cqi;
-    padding-left: 0.5cqi;
+    padding-right: 1cqi;
+    padding-left: 1cqi;
+    text-align:right;
 }
 
 .dataTable tr{
-    background-color:#0002;
+    background-color:rgb(10, 10, 10);
 }
 .dataTable tr:nth-child(odd){
-    background-color: #fff2;
+    background-color: rgb(25, 25, 25);
 }

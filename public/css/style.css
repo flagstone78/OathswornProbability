@@ -1,4 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=New+Rocker&display=swap');
+html{
+    scrollbar-width: thin;
+    scrollbar-color:  rgb(127, 127, 127) #0000;
+}
 
 body{
     position: relative;
