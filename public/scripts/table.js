@@ -25,7 +25,7 @@ function barChartHtml(chartName, chartid){
     elem.id = chartid;
     elem.innerHTML = 
         `<table>
-            <caption onclick="toggleTable(this)">${chartName}</caption>
+            <caption onclick="toggleTable(this.parentElement)">${chartName}</caption>
             <tbody>
                 <tr class="bars"></tr>
                 <tr class="values"></tr>
@@ -140,9 +140,9 @@ function toggleTable(e){
     let thead = e.querySelector('thead');
     if(tbody.checkVisibility()){
         tbody.style.display='none';
-        thead.style.display='none';
+        if(thead)thead.style.display='none';
     } else {
         tbody.style.display='';
-        thead.style.display='';
+        if(thead)thead.style.display='';
     }
 }
