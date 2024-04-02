@@ -5,13 +5,13 @@
 </head>
 
 <body>
-<div class="flexContainer">
+<div uiID="" class="flexContainer">
     <div><input type="checkbox" store uiID="autoPull" checked="true"> <label for="autoPull">Auto Pull From Server</label></div>
     <div><input type="checkbox" store uiID="autoPush" checked="true"> <label for="autoPush">Auto Push To Server</label></div>
     <div><input type="checkbox" store uiID="lockCards"> <label for="lockCards">Lock Cards</label></div>
     <div><input type="checkbox" store uiID="autoCalc" checked="true"> <label for="autoCalc">Auto Calculate</label></div>
 </div>
-<div class="flexContainer">
+<div uiID="" class="flexContainer">
     <div uiID = "player" class="flexContainer">
         <fieldset uiID = "white" class="white flexContainerCol">
             <legend>White</legend>
@@ -269,12 +269,17 @@
         return getUIobj(element.parentNode,{[id]:obj});
     }
 
-    function getElementsByObj(obj,callback, e=document){
+    function getElementsByObj(obj,callback, e=document.body){
         for(let k in obj){
-            let nexte = e.querySelector(`[uiID="${k}"]`);
-            if(nexte == null) return;
-            if(isObject(obj[k])) getElementsByObj(obj[k],callback,nexte);
-            else callback(nexte,obj[k]);
+            //if uIId is assigned empty, try again on children
+            e.querySelectorAll(`:scope > [uiID='']`).forEach(nexte=>{
+                getElementsByObj(obj,callback,nexte);
+            })
+            //if uiID matches the current key, recurse with child object on child elements
+            e.querySelectorAll(`:scope > [uiID="${k}"]`).forEach(nexte=>{
+                if(isObject(obj[k])) getElementsByObj(obj[k],callback,nexte);
+                else callback(nexte,obj[k]);
+            })
         }
     }
 
