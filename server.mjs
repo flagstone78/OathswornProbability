@@ -32,6 +32,7 @@ sockserver.on('connection', ws => {
     console.log('websocket error')
   }
   sendAll(ws);
+  ws.send(JSON.stringify({player:cachedValues.player}))
 })
 
 function storeData(data){
@@ -69,7 +70,7 @@ let cachedValues = {
 
 function recieveObj(obj){
     cachedValues.merge(obj);
-    console.log(cachedValues);
+    console.log(JSON.stringify(cachedValues.player));
 }
 
 function recieveFromAll(id,key,value){
