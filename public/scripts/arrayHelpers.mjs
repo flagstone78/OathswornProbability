@@ -1,4 +1,4 @@
-function applyArrayHeperFuncions(){
+function applyArrayHelperFuncions(){
     Object.defineProperty(Array.prototype,'sum',{value: function(){return this.reduce((prev,cur)=>{return prev+cur},0)}});
     Object.defineProperty(Array.prototype,'cumsum',{value: function(){return this.map((sum => value => sum += (value)?value:0)(0))}});
     Object.defineProperty(Array.prototype,'reversecumsum',{value: function(){return [...this].reverse().cumsum().reverse()}});
@@ -41,4 +41,4 @@ const objectMap = (obj, fn) =>
         )
     )
 
-export{applyArrayHeperFuncions, debounce, objectMap}
+export{applyArrayHelperFuncions, debounce, objectMap}

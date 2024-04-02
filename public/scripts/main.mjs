@@ -1,5 +1,5 @@
-import {applyArrayHeperFuncions, debounce, objectMap} from "./arrayHelpers.mjs"
-applyArrayHeperFuncions();
+import {applyArrayHelperFuncions, debounce, objectMap} from "./arrayHelpers.mjs"
+applyArrayHelperFuncions();
 import{probCheckMonster} from "./monsterProb.mjs"
 import{connectSocket} from "./socket.mjs"
 
