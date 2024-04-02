@@ -2,6 +2,7 @@
 html{
     scrollbar-width: thin;
     scrollbar-color:  rgb(127, 127, 127) #0000;
+    box-sizing: border-box; /* includes padding and border in total width*/
 }
 
 body{
@@ -19,6 +20,7 @@ body{
     background-size: 100% auto;
     background-repeat: no-repeat;
     touch-action: manipulation;
+    margin:0;
 }
 
 .cardui{
