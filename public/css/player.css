@@ -1,0 +1,98 @@
+body{
+    /* font-family: "fira-sans-2", Verdana, sans-serif; */
+    font-family: 'Courier New', Courier, monospace;
+    margin:0;
+}
+
+
+
+@media (max-resolution:100dpi){ /*is desktop*/
+    #size{
+        background-color: black;
+    }
+}
+
+.white{
+    background-color: #fff4;
+}
+.yellow{
+    background-color: #ff04;
+}
+.red{
+    background-color: #f004;
+}
+.black{
+    background-color: #0004;
+}
+
+th:first-child{
+    text-align: right;
+}
+
+.limitedCounter{
+    /* text-align: center; */
+    display: flex;
+    justify-content: space-between;
+    height:1em;
+}
+
+.gridContainer{
+    display: grid;
+    grid-template-columns: auto auto;
+    width: fit-content;
+}
+
+.gridContainer label{
+    text-align: right;
+}
+
+fieldset .subgrid{
+    padding: .1em;
+}
+fieldset{
+    padding: .3em;
+    margin:0;
+}
+
+legend{
+    text-align: left;
+}
+
+.subgrid{
+    text-align:center; 
+    display:grid;
+    grid-template-columns: auto auto auto; 
+    grid-column: span 2; 
+    position: relative;
+}
+
+.flexContainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    flex-grow: 1;
+}
+
+.flexContainerCol{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-between;
+}
+
+
+.limitedCounter button{
+    padding: 0;
+    width:2ch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline:4px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #181818;
+        color: #ccc;
+    }
+}
