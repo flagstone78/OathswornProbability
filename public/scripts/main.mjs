@@ -1,56 +1,28 @@
 import {applyArrayHeperFuncions, debounce, objectMap} from "./arrayHelpers.mjs"
 applyArrayHeperFuncions();
 import{probCheckMonster} from "./monsterProb.mjs"
+import{connectSocket} from "./socket.mjs"
 
 const dUpdateStats = debounce(updateStats,10);
 
-let websocketPort = 3001;
-let hostname = location.hostname || "localhost";
-
-let socket={};
-function connectSocket(){
-    return new Promise((resolve, reject)=>{
-        //double check that the socket is open (websocket will close after a minute of inactivity)
-        if(socket.readyState == WebSocket.OPEN) resolve(socket);
-        else {
-            let s =  new WebSocket('ws://'+hostname+':'+websocketPort);
-            // Connection opened
-            s.addEventListener("open", (event) => {
-                resolve(s);
-            });
-            
-            // Listen for messages
-            s.addEventListener("message", (event) => {
-                console.log("Message from server ", event.data);
-                try{
-                    let arr = JSON.parse(event.data);
-                    if(arr.length==3) recieveFromAll(...arr);
-                } catch{console.log("invalid json from server", event.data)}
-            });
-
-            s.addEventListener("error", (event) => {
-                reject(event);
-            });
-
-            s.addEventListener("close", (event) => {
-                console.log("Websocket closed");
-            });
-
-            socket = s;
-        }
-    });
+function socketMessageFcn(event){
+    console.log("Message from server ", event.data);
+    try{
+        let arr = JSON.parse(event.data);
+        if(arr.length==3) recieveFromAll(...arr);
+    } catch{console.log("invalid json from server", event.data)}
 }
 
-await connectSocket().catch(e=>{console.error("Could not connect to socket at beginning",e)});
+await connectSocket(socketMessageFcn).catch(e=>{console.error("Could not connect to socket at beginning",e)});
 
 window.onfocus = async ()=>{
-    await connectSocket().catch(e=>{console.error("Could not reconnect to socket on window focus",e)});
+    await connectSocket(socketMessageFcn).catch(e=>{console.error("Could not reconnect to socket on window focus",e)});
 }
 
 async function syncToAll(id,key,value){
     let v = recieveFromAll(id,key,value); //send to self, server will only send to others
     if(v == value){ //property was set succesfully
-        await connectSocket().then(
+        await connectSocket(socketMessageFcn).then(
             s => s.send(JSON.stringify([id,key,value])),
         ).catch(
             e => console.error("Could not reconnect before sending value",e)
