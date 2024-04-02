@@ -162,6 +162,7 @@
         e.userSetValue = (value)=>{
             if(e.validate(value)){ //is new value
                 if(e.getAttribute('sync') !== null) sendUIobj(getUIobj(e, value)); //sync to server
+                if(autoPush.checked) e.queue(value); //update the server queue
                 e.setValue(value);
             }
         }
@@ -194,9 +195,8 @@
             return !isSame;
         }
         e.mergeQueue= ()=>{
-            let queueValue = parseInt(e.nextElementSibling.textContent);
-            if(queueValue != e.getValue()){
-                e.setValue(queueValue);
+            if(e.queueValue != e.getValue()){
+                e.setValue(e.queueValue);
             }
         }
     });
