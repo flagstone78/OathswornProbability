@@ -93,7 +93,7 @@
 </div>
 <div class="flexContainer">
     <button type="button" id="pushAll" push>Push All</button>
-    <button type="button" calc onclick="calculate()">Calculate</button>
+    <button type="button" id="calculate" calc>Calculate</button>
     <button type="button" id="pullAll" pull>Pull All</button>
 </div>
 
@@ -209,6 +209,7 @@
     });
     document.querySelector('#pullAll').onclick = mergeMultiple(document.querySelectorAll('.subgrid .limitedCounter'));
     
+    document.querySelector('#calculate').onclick = calculate;
 
     function pushMultiple(elements){
         return ()=>{
@@ -220,13 +221,24 @@
                     child.queue(value);
                 }
             });
-            sendToSever(toSend);
+            if(Object.keys(toSend).length>0)sendToSever(toSend);
         }
     }
     document.querySelectorAll('legend button[push]').forEach(e=>{
         e.onclick = pushMultiple(e.parentNode.parentNode.querySelectorAll('.limitedCounter'))
     });
     document.querySelector('#pushAll').onclick = pushMultiple(document.querySelectorAll('.subgrid .limitedCounter'));
+
+    document.querySelectorAll('[reset]').forEach(e=>{
+        e.onclick = ()=>{
+            let counters = e.parentNode.parentNode.querySelectorAll('.limitedCounter');
+            counters.forEach(counter=>{
+                counter.setValue(0);
+                if(autoPush.checked) counter.queue(0);
+            })
+            e.parentNode.querySelector('button[push]').click();
+        }
+    })
 
     document.querySelectorAll("input[type=checkbox]").forEach(e=>{
         e.val = e.checked;
