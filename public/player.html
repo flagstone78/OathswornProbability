@@ -99,36 +99,38 @@
 
 </body>
 
-<script>
+<script type="module">
+    import{connectSocket} from "/scripts/socket.mjs"
+    import {applyObjHelperFuncions, isObject} from "/scripts/objHelpers.mjs"
+    applyObjHelperFuncions();
+
+    function socketMessageFcn(event){
+        console.log("Message from server ", event.data);
+        try{
+            let obj = JSON.parse(event.data);
+            if(isObject(obj)) recieveUIobj(obj);
+        } catch{console.log("invalid json from server", event.data)}
+    }
+
+    await connectSocket(socketMessageFcn).catch(e=>{console.error("Could not connect to socket at beginning",e)});
+
+    window.onfocus = async ()=>{
+        await connectSocket(socketMessageFcn).catch(e=>{console.error("Could not reconnect to socket on window focus",e)});
+    }
+    async function sendToSever(obj){
+        console.log("send:",JSON.stringify(obj));
+        await connectSocket(socketMessageFcn).then(
+            s => s.send(JSON.stringify(obj)),
+        ).catch(
+            e => console.error("Could not reconnect before sending value",e)
+        );
+    }
+
+
     let autoPush = document.querySelector('input[uiID=autoPush]');
     let autoPull = document.querySelector('input[uiID=autoPull]');
     let autoCalc = document.querySelector('input[uiID=autoCalc]');
     let lockCards = document.querySelector('input[uiID=lockCards]');
-
-    Object.defineProperty(Object.prototype, 'merge',{value:function(source){
-        if(source instanceof Object) Object.keys(source).forEach(k=>{
-            if(this[k]===undefined) {this[k] = source[k]; return this;}
-            if(this[k] instanceof Object) {
-                if((source[k] instanceof Object)) return this[k].merge(source[k]);
-                throw "cannot override object with value";
-            } else {
-                if(source[k] instanceof Object) throw "cannot override value with obj"
-                this[k] = source[k];
-            }
-            return this;
-        })
-        return this;
-    }});
-
-    Object.defineProperty(Object.prototype, 'split',{value:function(source){
-        if(source instanceof Object) {
-            let firstKey = Object.keys(source)[0];
-            if(this[firstKey] instanceof Object) return this[firstKey].split(source[firstKey]);
-            else return this[firstKey];
-        } else {
-            return this;
-        }
-    }});
 
     if(localStorage.getItem('__uiObj') == null) localStorage.setItem('__uiObj','{}')
     let __uiObj=JSON.parse(localStorage.getItem('__uiObj'));
@@ -212,7 +214,7 @@
     }
 
     function sendUIobj(obj){
-        if(autoPush.checked) console.log("send:",JSON.stringify(obj));
+        if(autoPush.checked) sendToSever(obj);
     }
     
     function recieveUIobj(obj){

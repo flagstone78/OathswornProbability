@@ -1,13 +1,19 @@
-const express = require('express');
+import { applyObjHelperFuncions } from "./public/scripts/objHelpers.mjs";
+applyObjHelperFuncions();
+
+import express from 'express';
 const app = express();
 const httpPort = 3000;
 const wsPort = 3001;
+app.get("/json/player",function(req,res){
+    res.send(JSON.stringify(cachedValues.player));
+})
 app.use(express.static('public'));
 app.use(express.static('rules'));
 app.listen(httpPort, () => console.log(`Listening on ${httpPort}`));
 
 let clientIdCounter = new Uint8Array(1); //max of 256 connections
-const { WebSocketServer } = require('ws')
+import { WebSocketServer } from 'ws';
 const sockserver = new WebSocketServer({ port: wsPort })
 sockserver.on('connection', ws => {
   console.log('New client connected!')
@@ -31,7 +37,8 @@ sockserver.on('connection', ws => {
 function storeData(data){
     try{
         let arr = JSON.parse(data);
-        if(arr.length==3) recieveFromAll(...arr);
+        if(!(arr instanceof Array) && (arr instanceof Object)) recieveObj(arr);
+        else if(arr.length==3) recieveFromAll(...arr);
     } catch{}
 }
 
@@ -59,6 +66,12 @@ let cachedValues = {
     b4:{},
     bc:{},
 }
+
+function recieveObj(obj){
+    cachedValues.merge(obj);
+    console.log(cachedValues);
+}
+
 function recieveFromAll(id,key,value){
     switch(key){
         case 'numInDiscard':
@@ -71,8 +84,8 @@ function recieveFromAll(id,key,value){
 }
 
 function sendAll(client){
-    for(id in cachedValues){
-        for(key in cachedValues[id]){
+    for(let id in cachedValues){
+        for(let key in cachedValues[id]){
             client.send(JSON.stringify([id,key,cachedValues[id][key]]));
         }
     }
