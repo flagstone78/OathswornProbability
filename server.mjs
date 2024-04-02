@@ -8,6 +8,9 @@ const wsPort = 3001;
 app.get("/json/player",function(req,res){
     res.send(JSON.stringify(cachedValues.player));
 })
+app.get("/json/monster",function(req,res){
+    res.send(JSON.stringify(cachedValues.monster));
+})
 app.use(express.static('public'));
 app.use(express.static('rules'));
 app.listen(httpPort, () => console.log(`Listening on ${httpPort}`));
