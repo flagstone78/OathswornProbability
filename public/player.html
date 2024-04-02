@@ -92,9 +92,9 @@
     <div class="gridContainer" uiID=""><label>Empowers</label><div class="limitedCounter" uiID="empowers" store>0</div></div>
 </div>
 <div class="flexContainer">
-    <button type="button" push>Push All</button>
+    <button type="button" id="pushAll" push>Push All</button>
     <button type="button" calc onclick="calculate()">Calculate</button>
-    <button type="button" pull>Pull All</button>
+    <button type="button" id="pullAll" pull>Pull All</button>
 </div>
 
 </body>
@@ -201,13 +201,32 @@
         }
     });
 
+    function mergeMultiple(elements){
+        return ()=>{elements.forEach(child=>child.mergeQueue())}
+    }
     document.querySelectorAll('legend button[pull]').forEach(e=>{
-        e.onclick = event=>{
-            event.target.parentNode.parentNode.querySelectorAll('.limitedCounter').forEach(child=>{
-                child.mergeQueue();
-            })
-        }
+        e.onclick = mergeMultiple(e.parentNode.parentNode.querySelectorAll('.limitedCounter'));
     });
+    document.querySelector('#pullAll').onclick = mergeMultiple(document.querySelectorAll('.subgrid .limitedCounter'));
+    
+
+    function pushMultiple(elements){
+        return ()=>{
+            let toSend={};
+            elements.forEach(child=>{
+                let value = child.getValue();
+                if( value != child.queueValue) {
+                    toSend.merge(getUIobj(child, value));
+                    child.queue(value);
+                }
+            });
+            sendToSever(toSend);
+        }
+    }
+    document.querySelectorAll('legend button[push]').forEach(e=>{
+        e.onclick = pushMultiple(e.parentNode.parentNode.querySelectorAll('.limitedCounter'))
+    });
+    document.querySelector('#pushAll').onclick = pushMultiple(document.querySelectorAll('.subgrid .limitedCounter'));
 
     document.querySelectorAll("input[type=checkbox]").forEach(e=>{
         e.val = e.checked;
