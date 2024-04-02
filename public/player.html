@@ -234,7 +234,6 @@
             let counters = e.parentNode.parentNode.querySelectorAll('.limitedCounter');
             counters.forEach(counter=>{
                 counter.setValue(0);
-                if(autoPush.checked) counter.queue(0);
             })
             e.parentNode.querySelector('button[push]').click();
         }
