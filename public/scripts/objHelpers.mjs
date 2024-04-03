@@ -27,6 +27,16 @@ function applyObjHelperFuncions(){
             return this;
         }
     }});
+
+    Object.defineProperty(Object.prototype, 'map',{value:function(fn){
+        //const objectMap = (obj, fn) =>
+        return Object.fromEntries(
+            Object.entries(this).map(
+                ([k, v], i) => [k, fn(v, k, i)]
+            )
+        )
+    }})
+
 }
 
 export{applyObjHelperFuncions, isObject}
