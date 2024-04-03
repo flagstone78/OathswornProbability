@@ -5,12 +5,48 @@ import express from 'express';
 const app = express();
 const httpPort = 3000;
 const wsPort = 3001;
+
+function cacheToIvon(cacheObj){
+    let obj = {
+        white_deck:{'0':0,'1':0,'2':0,'w':0},
+        yellow_deck:{'0':0,'1':0,'2':0, '3':0, 'y':0},
+        red_deck:{'0':0,'2':0,'3':0,'r':0},
+        black_deck:{'0':0,'3':0,'4':0,'b':0},
+    }
+    let wval =cacheObj?.white?.deck?.map((val)=>{return val.discarded});
+    if(wval) obj.white_deck = wval;
+    let yval = cacheObj?.yellow?.deck?.map((val)=>{return val.discarded});
+    if(yval) obj.yellow_deck = yval;
+    let rval = cacheObj?.red?.deck?.map((val)=>{return val.discarded});
+    if(rval) obj.red_deck = rval;
+    let bval = cacheObj?.black?.deck?.map((val)=>{return val.discarded});
+    if(bval) obj.black_deck = bval;
+    return obj;
+}
+
+function ivonToCache(bodyObj){
+    let obj = {};
+    if(bodyObj.white_deck) obj.white = {deck: bodyObj.white_deck.map(val=>{return {discarded:val}})}
+    if(bodyObj.yellow_deck) obj.yellow = {deck: bodyObj.yellow_deck.map(val=>{return {discarded:val}})}
+    if(bodyObj.red_deck) obj.red = {deck: bodyObj.red_deck.map(val=>{return {discarded:val}})}
+    if(bodyObj.black_deck) obj.black = {deck: bodyObj.black_deck.map(val=>{return {discarded:val}})}
+    return obj;
+}
+
 app.get("/json/player",function(req,res){
-    res.send(JSON.stringify(cachedValues.player));
+    res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
 })
-app.get("/json/monster",function(req,res){
-    res.send(JSON.stringify(cachedValues.monster));
+app.post("/json/player",express.json(),function(req,res){
+    console.log("post",req.body);
+    let obj = {player:ivonToCache(req.body)};
+    console.log("post parsed",JSON.stringify(obj))
+    recieveObj(obj);
+    sendToAllButSender(JSON.stringify(obj),255);
+    res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
 })
+// app.get("/json/monster",function(req,res){
+//     res.send(JSON.stringify(cachedValues.monster));
+// })
 app.use(express.static('public'));
 app.use(express.static('rules'));
 app.listen(httpPort, () => console.log(`Listening on ${httpPort}`));
@@ -26,10 +62,7 @@ sockserver.on('connection', ws => {
   ws.on('close', () => console.log('Client has disconnected!'))
   ws.on('message', data => {
     storeData(data);
-    console.log(`distributing message: ${data}`)
-    sockserver.clients.forEach(client => {
-        if(client.clientId != id) client.send(`${data}`)
-    })
+    sendToAllButSender(data,id);
   })
   ws.onerror = function () {
     console.log('websocket error')
@@ -37,6 +70,13 @@ sockserver.on('connection', ws => {
   sendAll(ws);
   ws.send(JSON.stringify({player:cachedValues.player}))
 })
+
+function sendToAllButSender(data,id){
+    console.log(`distributing message: ${data}`)
+    sockserver.clients.forEach(client => {
+        if(client.clientId != id) client.send(`${data}`)
+    })
+}
 
 function storeData(data){
     try{
@@ -73,7 +113,7 @@ let cachedValues = {
 
 function recieveObj(obj){
     cachedValues.merge(obj);
-    console.log(JSON.stringify(cachedValues.player));
+    //console.log(JSON.stringify(cachedValues.player));
 }
 
 function recieveFromAll(id,key,value){

@@ -15,7 +15,7 @@
     <div uiID = "player" class="flexContainer">
         <fieldset uiID = "white" class="white flexContainerCol">
             <legend>White</legend>
-            <fieldset uiID="discard" class="subgrid">
+            <fieldset uiID="deck" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" store sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 1s:</div><div class="limitedCounter" store sync uiID="1" max="6" points="1">0</div><div>0</div>
@@ -25,15 +25,15 @@
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label> <div>1.16</div>
                 <label>Dice Average:</label> <div>1.16</div>
-                <label>Might:</label><div class="limitedCounter" uiID="might" store>18</div>
-                <!-- <label>Dice:</label><div class="limitedCounter">0</div>
-                <label>Deck:</label><div class="limitedCounter">0</div> -->
+                <label>Might:</label><div class="counter" uiID="might" store>18</div>
+                <!-- <label>Dice:</label><div class="counter">0</div>
+                <label>Deck:</label><div class="counter">0</div> -->
             </div>
             
         </fieldset>
         <fieldset uiID = "yellow" class="yellow flexContainerCol">
             <legend>Yellow</legend>
-            <fieldset uiID="discard" class="subgrid">
+            <fieldset uiID="deck" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" store sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 1s:</div><div class="limitedCounter" store sync uiID="1" max="3" points="1">0</div><div>0</div>
@@ -44,16 +44,16 @@
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label> <div>1.74</div>
                 <label>Dice Average:</label> <div>1.74</div>
-                <label>Might:</label><div class="limitedCounter" uiID="might" store>0</div>
-                <!-- <label>Dice:</label>    <div class="limitedCounter">0</div>
-                <label>Deck:</label>    <div class="limitedCounter">0</div> -->
+                <label>Might:</label><div class="counter" uiID="might" store>0</div>
+                <!-- <label>Dice:</label>    <div class="counter">0</div>
+                <label>Deck:</label>    <div class="counter">0</div> -->
             </div>
         </fieldset>
     </div>
     <div uiID = "player" class="flexContainer">
         <fieldset uiID = "red" class="red flexContainerCol">
             <legend>Red</legend>
-            <fieldset uiID="discard" class="subgrid">
+            <fieldset uiID="deck" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" store sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 2s:</div><div class="limitedCounter" store sync uiID="2" max="3" points="2">0</div><div>0</div>
@@ -63,14 +63,14 @@
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label> <div>2.31</div>
                 <label>Dice Average:</label> <div>2.31</div>
-                <label>Might:</label><div class="limitedCounter" uiID="might" store>0</div>
-                <!-- <label>Dice:</label>    <div class="limitedCounter">0</div>
-                <label>Deck:</label>    <div class="limitedCounter">0</div> -->
+                <label>Might:</label><div class="counter" uiID="might" store>0</div>
+                <!-- <label>Dice:</label>    <div class="counter">0</div>
+                <label>Deck:</label>    <div class="counter">0</div> -->
             </div>
         </fieldset>
         <fieldset uiID = "black" class="black flexContainerCol">
             <legend>Black</legend>
-            <fieldset uiID="discard"class="subgrid">
+            <fieldset uiID="deck"class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" store sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 3s:</div><div class="limitedCounter" store sync uiID="1" max="6" points="3">0</div><div>0</div>
@@ -80,16 +80,16 @@
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label><div class="numberResult" uiID="average">2.89</div>
                 <label>Dice Average:</label><div>2.89</div>
-                <label>Might:</label><div class="limitedCounter" uiID="might" store>0</div>
-                <!-- <label>Dice:</label>   <div class="limitedCounter">0</div>
-                <label>Deck:</label>   <div class="limitedCounter">0</div> -->
+                <label>Might:</label><div class="counter" uiID="might" store>0</div>
+                <!-- <label>Dice:</label>   <div class="counter">0</div>
+                <label>Deck:</label>   <div class="counter">0</div> -->
             </div>
         </fieldset>
     </div>
 </div>
 <div uiID = "player" class="flexContainer">
-    <div class="gridContainer" uiID=""><label>Rerolls</label><div class="limitedCounter" uiID="rerolls" store>0</div></div>
-    <div class="gridContainer" uiID=""><label>Empowers</label><div class="limitedCounter" uiID="empowers" store>0</div></div>
+    <div class="gridContainer" uiID=""><label>Rerolls</label><div class="counter" uiID="rerolls" store>0</div></div>
+    <div class="gridContainer" uiID=""><label>Empowers</label><div class="counter" uiID="empowers" store>0</div></div>
 </div>
 <div class="flexContainer">
     <button type="button" id="pushAll" push>Push All</button>
@@ -140,20 +140,52 @@
 
     if(localStorage.getItem('__uiObj') == null) localStorage.setItem('__uiObj','{}')
     let __uiObj=JSON.parse(localStorage.getItem('__uiObj'));
+    window.__uiObj = __uiObj;
     function storeUIobj(uiobj){
         __uiObj.merge(uiobj);
     }
 
-    document.querySelectorAll(".limitedCounter").forEach(e=>{
-        let min = parseInt(e.getAttribute('min')) || 0;
-        let max = parseInt(e.getAttribute('max')) || Infinity;
-        let maxText = (max!=Infinity)? `<span>/</span><span>${max}</span>`:'';
+    document.querySelectorAll(".counter").forEach(e=>{
         let value = parseInt(e.textContent);
         e.innerHTML=
             `<button onclick="this.parentNode.userSetValue(this.parentNode.getValue()-1)">−</button>`+
-            `<span>${value}</span>${maxText}`+
+            `<span>${value}</span>`+
             `<button onclick="this.parentNode.userSetValue(this.parentNode.getValue()+1)">+</button>`;
         let displayElement = e.childNodes[1];
+        e.getValue = ()=>parseInt(displayElement.textContent);
+        e.validate = (val)=> val != e.getValue();
+        e.userSetValue = (value)=>{
+            if(e.validate(value)){ //is new value
+                if(e.getAttribute('sync') !== null) sendUIobj(getUIobj(e, value)); //sync to server
+                e.setValue(value);
+            }
+        }
+        //should always update the ui object, but only fire uiChange when different
+        e.setValue = (value)=>{
+            if(e.validate(value)) { //is new value
+                displayElement.textContent = value; //sets the ui and current value
+                storeUIobj(getUIobj(e, value)); //store in ui obj
+                UIchange(); //trigger calculations from ui change
+            }
+        }
+        e.initialize = ()=>{
+            storeUIobj(getUIobj(e, value));
+        }
+    })
+
+    document.querySelectorAll(".limitedCounter").forEach(e=>{
+        let min = parseInt(e.getAttribute('min')) || 0;
+        let max = parseInt(e.getAttribute('max')) || Infinity;
+        let hasMax = (max!=Infinity);
+        let maxText = hasMax? `<span>/</span><span uiID="max">${max}</span>`:'';
+        let value = parseInt(e.textContent);
+        e.innerHTML=
+            `<button onclick="this.parentNode.userSetValue(this.parentNode.getValue()-1)">−</button>`+
+            `<span uiID="discarded">${value}</span>${maxText}`+
+            `<button onclick="this.parentNode.userSetValue(this.parentNode.getValue()+1)">+</button>`;
+        let displayElement = e.childNodes[1];
+        displayElement.queue = (value)=>e.queue(value);
+        displayElement.mergeQueue = (value)=>e.mergeQueue(value);
         e.validate = (value)=>{
             let current = e.getValue();
             return value != current && value <= max && value >= min
@@ -161,7 +193,7 @@
         e.getValue = ()=>parseInt(displayElement.textContent);
         e.userSetValue = (value)=>{
             if(e.validate(value)){ //is new value
-                if(e.getAttribute('sync') !== null) sendUIobj(getUIobj(e, value)); //sync to server
+                if(e.getAttribute('sync') !== null) sendUIobj(getUIobj(displayElement, value)); //sync to server
                 if(autoPush.checked) e.queue(value); //update the server queue
                 e.setValue(value);
             }
@@ -171,14 +203,16 @@
             if(e.validate(value)) { //is new value
                 displayElement.textContent = value; //sets the ui and current value
                 e.queueUI();
-                storeUIobj(getUIobj(e, value)); //store in ui obj
+                storeUIobj(getUIobj(displayElement, value)); //store in ui obj
                 UIchange(); //trigger calculations from ui change
             }
         }
         e.initialize = ()=>{
-            storeUIobj(getUIobj(e, e.getValue()));
+            storeUIobj(getUIobj(displayElement, value));
+            if(hasMax) storeUIobj(getUIobj(e.childNodes[3], max));
             e.queueUI();
         }
+
         e.queueValue = e.getValue();
         e.queueElement = e.nextElementSibling;
         e.queue = (value)=>{
@@ -318,7 +352,7 @@
     }
     
     function recieveUIobj(obj){
-        console.log("recieved:", JSON.stringify(obj));
+        console.log("recievedUIOBJ:", JSON.stringify(obj));
         getElementsByObj(obj,(e,val)=>{e.queue(val);})
         if(autoPull.checked) getElementsByObj(obj,(e,val)=>{e.mergeQueue()})
     }
