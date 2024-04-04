@@ -1,11 +1,18 @@
 import {initializeSocket} from "/scripts/socket.mjs"
 import {applyObjHelperFuncions, isObject} from "/scripts/objHelpers.mjs"
-import {monsterCalcs} from "/scripts/monsterCalc.mjs"
 import {addUIProperties as addCounterUIProperties} from "/scripts/counter.mjs"
 import {addUIProperties as addLimitedCounterUIProperties} from "/scripts/limitedCounter.mjs"
 import {addUIProperties as addCheckBoxUIProperties} from "/scripts/checkBox.mjs"
 import {getElementUIobj, getStoredUIvalue, getElementsByObj} from "/scripts/storage.mjs"
 applyObjHelperFuncions();
+
+let calculate = ()=>{
+    console.warn("calculate function not set")
+}
+
+export default function setCalcFn(calcFn){
+    calculate = calcFn;
+}
 
 let sendUIobj = initializeSocket(recieveUIobj); //returns function for sending objects
 
@@ -14,17 +21,31 @@ let autoPull = document.querySelector('input[uiID=autoPull]');
 let autoCalc = document.querySelector('input[uiID=autoCalc]');
 let lockCards = document.querySelector('input[uiID=lockCards]');
 
+
 function onLimitedCounterClick(e){ if(e.sync && autoPush.checked) sendUIobj(e.getUIobj())}; //sync to server
 
 document.querySelectorAll(".counter").forEach(e=>{addCounterUIProperties(e,UIchange)});
 document.querySelectorAll(".limitedCounter").forEach(e=>{addLimitedCounterUIProperties(e,UIchange,onLimitedCounterClick)});
 document.querySelectorAll("input[type=checkbox]").forEach(e=>{addCheckBoxUIProperties(e, uiVisibilityChange)});
 
+let pullButtons = document.querySelectorAll('button[pull]');
+let pushButtons = document.querySelectorAll('button[push]');
+let calcButtons = document.querySelectorAll('button[calc]');
+let resetButtons = document.querySelectorAll('button[reset]');
+let cardButtons = document.querySelectorAll('.subgrid .limitedCounter button');
+function uiVisibilityChange(){
+    pullButtons.forEach(e=>{e.hidden=autoPull.checked}); 
+    pushButtons.forEach(e=>{e.hidden=(autoPush.checked||lockCards.checked)}); 
+    calcButtons.forEach(e=>{e.hidden=autoCalc.checked});
+    cardButtons.forEach(e=>{e.style.visibility=(lockCards.checked)?'hidden':''}); 
+    resetButtons.forEach(e=>{e.hidden=lockCards.checked});
+}
+
 function mergeMultiple(elements){return ()=>{elements.forEach(child=>child.mergeQueue())}}
 document.querySelectorAll('legend button[pull]').forEach(e=>{e.onclick = mergeMultiple(e.parentNode.parentNode.querySelectorAll('.limitedCounter'))});
 document.querySelector('#pullAll').onclick = mergeMultiple(document.querySelectorAll('.subgrid .limitedCounter'));
 
-document.querySelector('#calculate').onclick = calculate;
+document.querySelector('#calc').onclick = ()=>calculate();
 
 function pushMultiple(elements){
     return ()=>{
@@ -60,19 +81,6 @@ document.querySelectorAll("[store]").forEach(e=>{
 //initialize all ui elements to ensure the storedUI state is fully populated
 document.querySelectorAll(".limitedCounter, .counter, input[type=checkbox]").forEach(e=>{e.initialize()});
 
-let pullButtons = document.querySelectorAll('button[pull]');
-let pushButtons = document.querySelectorAll('button[push]');
-let calcButtons = document.querySelectorAll('button[calc]');
-let resetButtons = document.querySelectorAll('button[reset]');
-let cardButtons = document.querySelectorAll('.subgrid .limitedCounter button');
-function uiVisibilityChange(){
-    pullButtons.forEach(e=>{e.hidden=autoPull.checked}); 
-    pushButtons.forEach(e=>{e.hidden=(autoPush.checked||lockCards.checked)}); 
-    calcButtons.forEach(e=>{e.hidden=autoCalc.checked});
-    cardButtons.forEach(e=>{e.style.visibility=(lockCards.checked)?'hidden':''}); 
-    resetButtons.forEach(e=>{e.hidden=lockCards.checked});
-}
-
 function recieveUIobj(obj){
     console.log("recievedUIOBJ:", JSON.stringify(obj));
     getElementsByObj(obj,(e,val)=>{e.queue(val);})
@@ -83,6 +91,3 @@ function UIchange(){
     if(autoCalc.checked) calculate();
 }
 
-function calculate(){
-    monsterCalcs(getStoredUIvalue({monster:undefined}))
-}
