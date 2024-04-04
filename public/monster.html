@@ -24,8 +24,8 @@
                 <div>Discarded{2}s</div><div class="limitedCounter" sync uiID="w" max="3" points="2">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label> <div>0</div>
-                <label>Deck:</label><div class="counter" uiID="might">0</div>
+                <!-- <label>Deck Average:</label> <div>0</div> -->
+                <label>Draw:</label><div class="counter" store uiID="might">0</div>
             </div>
             
         </fieldset>
@@ -40,8 +40,8 @@
                 <div>Discarded{3}s</div><div class="limitedCounter" sync uiID="y" max="3" points="3">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label> <div>0</div>
-                <label>Deck:</label>    <div class="counter" uiID="might">0</div>
+                <!-- <label>Deck Average:</label> <div>0</div> -->
+                <label>Draw:</label>    <div class="counter" store uiID="might">0</div>
             </div>
         </fieldset>
     </div>
@@ -56,8 +56,8 @@
                 <div>Discarded{4}s</div><div class="limitedCounter" sync uiID="r" max="3" points="4">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label> <div>0</div>
-                <label>Deck:</label>    <div class="counter" uiID="might">0</div> 
+                <!-- <label>Deck Average:</label> <div>0</div> -->
+                <label>Draw:</label>    <div class="counter" store uiID="might">0</div> 
             </div>
         </fieldset>
         <fieldset uiID = "black" class="black flexContainerCol">
@@ -70,8 +70,8 @@
                 <div>Discarded{5}s</div><div class="limitedCounter" sync uiID="b" max="3" points="5">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label><div class="numberResult" uiID="average">0</div>
-                <label>Deck:</label>   <div class="counter" uiID="might">0</div>
+                <!-- <label>Deck Average:</label><div class="numberResult" uiID="average">0</div> -->
+                <label>Draw:</label>   <div class="counter" store uiID="might">0</div>
             </div>
         </fieldset>
     </div>
@@ -83,8 +83,6 @@
 </div>
 
 </body>
-
-<script type="text/javascript" src="scripts/table.js"></script>
 
 <script type="module">
     import{connectSocket} from "/scripts/socket.mjs"
