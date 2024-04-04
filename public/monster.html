@@ -13,10 +13,10 @@
     <div><input class="uiCheckbox" id="c4" type="checkbox" store uiID="autoCalc" checked="true"> <label for="c4">Auto Calculate</label></div>
 </div>
 <div uiID="monster" class="flexContainer">
-    <div uiID="" class="flexContainer">
-        <fieldset uiID = "white" class="white flexContainerCol">
+    <div uiID="deck" class="flexContainer">
+        <fieldset uiID="white" class="white flexContainerCol">
             <legend>White</legend>
-            <fieldset uiID="deck" class="subgrid">
+            <fieldset uiID="discard" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 1s:</div><div class="limitedCounter" sync uiID="1" max="6" points="1">0</div><div>0</div>
@@ -29,9 +29,9 @@
             </div>
             
         </fieldset>
-        <fieldset uiID = "yellow" class="yellow flexContainerCol">
+        <fieldset uiID="yellow" class="yellow flexContainerCol">
             <legend>Yellow</legend>
-            <fieldset uiID="deck" class="subgrid">
+            <fieldset uiID="discard" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 1s:</div><div class="limitedCounter" sync uiID="1" max="3" points="1">0</div><div>0</div>
@@ -45,10 +45,10 @@
             </div>
         </fieldset>
     </div>
-    <div uiID="" class="flexContainer">
-        <fieldset uiID = "red" class="red flexContainerCol">
+    <div uiID="deck" class="flexContainer">
+        <fieldset uiID="red" class="red flexContainerCol">
             <legend>Red</legend>
-            <fieldset uiID="deck" class="subgrid">
+            <fieldset uiID="discard" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 2s:</div><div class="limitedCounter" sync uiID="2" max="3" points="2">0</div><div>0</div>
@@ -60,9 +60,9 @@
                 <label>Draw:</label>    <div class="counter" store sync uiID="might">0</div> 
             </div>
         </fieldset>
-        <fieldset uiID = "black" class="black flexContainerCol">
+        <fieldset uiID="black" class="black flexContainerCol">
             <legend>Black</legend>
-            <fieldset uiID="deck"class="subgrid">
+            <fieldset uiID="discard"class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
                 <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
                 <div>Discarded 3s:</div><div class="limitedCounter" sync uiID="1" max="6" points="3">0</div><div>0</div>
@@ -118,11 +118,11 @@
         let obj = getStoredUIvalue({monster:undefined});
         console.log('do calcs', obj);
         //cardCopy = {white:{deckCards:[1,1,2,2],discardCards:[1,3],toDraw:1}}
-        let cardCopy = obj.map(d=>{
+        let cardCopy = obj.deck.map(d=>{
             let deckCards = [];
             let discardCards = [];
-            for(const prop in d.deck){
-                let c = d.deck[prop];
+            for(const prop in d.discard){
+                let c = d.discard[prop];
                 deckCards = deckCards.concat(Array(c.max-c.discarded).fill(c.points));
                 discardCards = discardCards.concat(Array(c.discarded).fill(c.points));
             }
@@ -132,7 +132,7 @@
                 toDraw: d.might*obj.mobMultiplier
             }
         })
-        startWork(probCheckMonster,'scripts/monsterProb.mjs',[cardCopy,obj.removeMax,obj.rerollZeros], updateUI);
+        startWork(probCheckMonster,'scripts/monsterProb.mjs',[cardCopy, obj.removeMax, obj.rerollZeros], updateUI);
     }
 
     setCalcFn(monsterCalc);

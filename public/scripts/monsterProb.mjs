@@ -8,8 +8,8 @@ self.onmessage = (e) => {
 
 function probCheckMonster(cards, removeMax=false, rerollZeros=false, iterations=1000000){
     applyArrayHelperFuncions();
-    if(cards == undefined) return {prob:[],probMaxRemoved:[]};
-    //console.log(deckCards, discardCards);
+    if(cards == undefined) return [];
+    console.log(cards);
     //count scores over many iterations
     let scoreCount = [];
     for(let i=0;i<iterations;i++){

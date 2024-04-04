@@ -1,7 +1,7 @@
 import { isObject } from "./objHelpers.mjs";
 if(localStorage.getItem('__uiObj') == null) localStorage.setItem('__uiObj','{}')
 let __uiObj=JSON.parse(localStorage.getItem('__uiObj'));
-//window.__uiObj = __uiObj;
+window.__uiObj = __uiObj;
 
 window.onbeforeunload = function() {
     localStorage.setItem('__uiObj',JSON.stringify(__uiObj));
