@@ -38,11 +38,15 @@ app.get("/json/player",function(req,res){
 })
 app.post("/json/player",express.json(),function(req,res){
     console.log("post",req.body);
-    let obj = {player:{deck: ivonToCache(req.body)}};
-    console.log("post parsed",JSON.stringify(obj))
-    recieveObj(obj);
-    sendToAllButSender(JSON.stringify(obj),"");
-    res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
+    if(Object.keys(req.body).length === 0){
+        res.status(400).send(`invalid/empty json object: ${JSON.stringify(req.body)}`);
+    } else {
+        let obj = {player:{deck: ivonToCache(req.body)}};
+        console.log("post parsed",JSON.stringify(obj))
+        recieveObj(obj);
+        sendToAllButSender(JSON.stringify(obj),"");
+        res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
+    }
 })
 // app.get("/json/monster",function(req,res){
 //     res.send(JSON.stringify(cachedValues.monster));
