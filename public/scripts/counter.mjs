@@ -2,6 +2,7 @@ import { storeUIobj, getElementUIobj } from "./storage.mjs";
 
 function addUIProperties(e,onChangeFn, onClickFn){
     let value = parseInt(e.textContent);
+    let min = parseInt(e.getAttribute('min')) || 0;
     e.sync = e.getAttribute('sync') !== null;
     e.innerHTML=
         `<button onclick="this.parentNode.userSetValue(this.parentNode.getValue()-1)">−</button>`+
@@ -10,7 +11,7 @@ function addUIProperties(e,onChangeFn, onClickFn){
     let displayElement = e.childNodes[1];
     e.getValue = ()=>parseInt(displayElement.textContent);
     e.getUIobj= ()=>getElementUIobj(e, e.getValue());
-    e.validate = (val)=> (val >= 0 && val != e.getValue());
+    e.validate = (val)=> (val >= min && val != e.getValue());
     e.serverSetValue = (val)=>{e.setValue(val)}
     function userSetValue(value){
         if(e.validate(value)){ //is new value
