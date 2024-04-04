@@ -2,6 +2,7 @@
 <head>
     <meta name="viewport" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="css/player.css">
+    <link rel="stylesheet" href="css/chart.css">
 </head>
 
 <body>
@@ -11,8 +12,8 @@
     <div><input type="checkbox" store uiID="lockCards"> <label for="lockCards">Lock Cards</label></div>
     <div><input type="checkbox" store uiID="autoCalc" checked="true"> <label for="autoCalc">Auto Calculate</label></div>
 </div>
-<div uiID="" class="flexContainer">
-    <div uiID = "player" class="flexContainer">
+<div uiID="monster" class="flexContainer">
+    <div uiID="" class="flexContainer">
         <fieldset uiID = "white" class="white flexContainerCol">
             <legend>White</legend>
             <fieldset uiID="deck" class="subgrid">
@@ -23,11 +24,8 @@
                 <div>Discarded{2}s</div><div class="limitedCounter" sync uiID="w" max="3" points="2">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label> <div>1.16</div>
-                <label>Dice Average:</label> <div>1.16</div>
-                <label>Might:</label><div class="counter" uiID="might" store>18</div>
-                <!-- <label>Dice:</label><div class="counter">0</div>
-                <label>Deck:</label><div class="counter">0</div> -->
+                <label>Deck Average:</label> <div>0</div>
+                <label>Deck:</label><div class="counter" uiID="might">0</div>
             </div>
             
         </fieldset>
@@ -42,15 +40,12 @@
                 <div>Discarded{3}s</div><div class="limitedCounter" sync uiID="y" max="3" points="3">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label> <div>1.74</div>
-                <label>Dice Average:</label> <div>1.74</div>
-                <label>Might:</label><div class="counter" uiID="might" store>0</div>
-                <!-- <label>Dice:</label>    <div class="counter">0</div>
-                <label>Deck:</label>    <div class="counter">0</div> -->
+                <label>Deck Average:</label> <div>0</div>
+                <label>Deck:</label>    <div class="counter" uiID="might">0</div>
             </div>
         </fieldset>
     </div>
-    <div uiID = "player" class="flexContainer">
+    <div uiID="" class="flexContainer">
         <fieldset uiID = "red" class="red flexContainerCol">
             <legend>Red</legend>
             <fieldset uiID="deck" class="subgrid">
@@ -61,11 +56,8 @@
                 <div>Discarded{4}s</div><div class="limitedCounter" sync uiID="r" max="3" points="4">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label> <div>2.31</div>
-                <label>Dice Average:</label> <div>2.31</div>
-                <label>Might:</label><div class="counter" uiID="might" store>0</div>
-                <!-- <label>Dice:</label>    <div class="counter">0</div>
-                <label>Deck:</label>    <div class="counter">0</div> -->
+                <label>Deck Average:</label> <div>0</div>
+                <label>Deck:</label>    <div class="counter" uiID="might">0</div> 
             </div>
         </fieldset>
         <fieldset uiID = "black" class="black flexContainerCol">
@@ -78,18 +70,11 @@
                 <div>Discarded{5}s</div><div class="limitedCounter" sync uiID="b" max="3" points="5">0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
-                <label>Deck Average:</label><div class="numberResult" uiID="average">2.89</div>
-                <label>Dice Average:</label><div>2.89</div>
-                <label>Might:</label><div class="counter" uiID="might" store>0</div>
-                <!-- <label>Dice:</label>   <div class="counter">0</div>
-                <label>Deck:</label>   <div class="counter">0</div> -->
+                <label>Deck Average:</label><div class="numberResult" uiID="average">0</div>
+                <label>Deck:</label>   <div class="counter" uiID="might">0</div>
             </div>
         </fieldset>
     </div>
-</div>
-<div uiID = "player" class="flexContainer">
-    <div class="gridContainer" uiID=""><label>Rerolls</label><div class="counter" uiID="rerolls" store>0</div></div>
-    <div class="gridContainer" uiID=""><label>Empowers</label><div class="counter" uiID="empowers" store>0</div></div>
 </div>
 <div class="flexContainer">
     <button type="button" id="pushAll" push>Push All</button>
@@ -99,9 +84,12 @@
 
 </body>
 
+<script type="text/javascript" src="scripts/table.js"></script>
+
 <script type="module">
     import{connectSocket} from "/scripts/socket.mjs"
     import {applyObjHelperFuncions, isObject} from "/scripts/objHelpers.mjs"
+    import {monsterCalcs} from "/scripts/monsterCalc.mjs"
     applyObjHelperFuncions();
 
     const socketMessageFcn = (event)=>{
@@ -187,7 +175,6 @@
         displayElement.queue = (value)=>e.queue(value);
         displayElement.mergeQueue = (value)=>e.mergeQueue(value);
         displayElement.setValue = (value)=>e.setValue(value);
-        displayElement.initialize = ()=>e.initialize();
         e.validate = (value)=>{
             let current = e.getValue();
             return value != current && value <= max && value >= min
@@ -213,6 +200,7 @@
             storeUIobj(getUIobj(displayElement, e.getValue()));
             e.queue(e.getValue());
             if(hasMax) storeUIobj(getUIobj(e.childNodes[3], max));
+            if(e.getAttribute('points')!=null) storeUIobj(getUIobj(e, {points:parseInt(e.getAttribute('points'))}));
         }
 
         e.queueValue = e.getValue();
@@ -364,7 +352,7 @@
     }
 
     function calculate(){
-        console.log('do calcs', __uiObj.split({player:undefined}));
+        monsterCalcs(__uiObj.split({monster:undefined}))
     }
 
 

@@ -146,3 +146,5 @@ function toggleTable(e){
         if(thead)thead.style.display='';
     }
 }
+
+export{loadTableGraphic, loadTableList, toggleTable}

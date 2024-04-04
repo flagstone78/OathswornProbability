@@ -2,6 +2,7 @@ import {applyArrayHelperFuncions, debounce, objectMap} from "./arrayHelpers.mjs"
 applyArrayHelperFuncions();
 import{probCheckMonster} from "./monsterProb.mjs"
 import{connectSocket} from "./socket.mjs"
+import { startWork } from "./worker.mjs";
 
 const dUpdateStats = debounce(updateStats,10);
 
@@ -147,24 +148,6 @@ const cardsByColors = (()=>{
 Array.from(document.querySelectorAll(".reset")).forEach(re=>{
     re.addEventListener('click',getResetClickFcn(re));
 })
-
-//puts heavy calculation on the webworker. falls back to running inline
-let myWorker={terminate:function(){}};
-function startWork(fcn, functionFile, parameters, callBackFcn){
-    if(window.Worker){
-        myWorker.terminate(); //kill previous instance
-        myWorker = new Worker(functionFile, { type: "module" }); //remake
-        document.myWorker = myWorker;
-        myWorker.onmessage = (e)=>{
-            //console.log('Message received from worker', e.data);
-            callBackFcn(e.data);
-        }
-        myWorker.postMessage(parameters);
-    } else {
-        callBackFcn(fcn(...parameters)); // do the work directly
-    }
-}
-
 
 function updateUI(res){
     let chanceAtleast = res.prob.reversecumsum();
