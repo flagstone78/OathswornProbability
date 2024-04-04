@@ -135,7 +135,7 @@ function loadTableList(tableName, objArr, colHeader, toShow=true) {
     table.querySelector('tbody').innerHTML = tableData;
 }
 
-function toggleTable(e){
+window.toggleTable = (e)=>{
     let tbody = e.querySelector('tbody');
     let thead = e.querySelector('thead');
     if(tbody.checkVisibility()){
@@ -147,4 +147,4 @@ function toggleTable(e){
     }
 }
 
-export{loadTableGraphic, loadTableList, toggleTable}
+export{loadTableGraphic, loadTableList}

@@ -1,4 +1,5 @@
 import {applyArrayHelperFuncions, debounce, objectMap} from "./arrayHelpers.mjs"
+import { loadTableGraphic, loadTableList } from "./table.mjs";
 applyArrayHelperFuncions();
 import{probCheckMonster} from "./monsterProb.mjs"
 import{connectSocket} from "./socket.mjs"

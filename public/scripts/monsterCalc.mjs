@@ -1,11 +1,10 @@
 import { startWork } from "./worker.mjs";
 import { probCheckMonster } from "./monsterProb.mjs";
 import {applyArrayHelperFuncions} from "./arrayHelpers.mjs"
-import { loadTableGraphic, loadTableList, toggleTable} from "./table.mjs";
+import { loadTableGraphic, loadTableList} from "./table.mjs";
 applyArrayHelperFuncions();
 
 function updateUI(res){
-    window.toggleTable = toggleTable;
     let chanceAtleast = res.prob.reversecumsum();
     let chanceAtleastMaxRemoved = res.probMaxRemoved.reversecumsum();
     loadTableGraphic("Chance Graph of at least x", [chanceAtleast,chanceAtleastMaxRemoved], false);
