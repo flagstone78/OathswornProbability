@@ -8,7 +8,7 @@ function addUIProperties(e,onChangeFn){
         `<button onclick="this.parentNode.userSetValue(this.parentNode.getValue()+1)">+</button>`;
     let displayElement = e.childNodes[1];
     e.getValue = ()=>parseInt(displayElement.textContent);
-    e.validate = (val)=> val != e.getValue();
+    e.validate = (val)=> (val >= 0 && val != e.getValue());
     e.userSetValue = (value)=>{
         if(e.validate(value)){ //is new value
             if(e.getAttribute('sync') !== null) sendUIobj(getElementUIobj(e, value)); //sync to server
