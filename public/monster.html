@@ -6,11 +6,11 @@
 </head>
 
 <body>
-<div uiID="" class="flexContainer">
-    <div><input type="checkbox" store uiID="autoPull" checked="true"> <label for="autoPull">Auto Pull From Server</label></div>
-    <div><input type="checkbox" store uiID="autoPush" checked="true"> <label for="autoPush">Auto Push To Server</label></div>
-    <div><input type="checkbox" store uiID="lockCards"> <label for="lockCards">Lock Cards</label></div>
-    <div><input type="checkbox" store uiID="autoCalc" checked="true"> <label for="autoCalc">Auto Calculate</label></div>
+<div class="flexContainer">
+    <div><input class="uiCheckbox" id="c1" type="checkbox" store uiID="autoPull" checked="true"> <label for="c1">Auto Pull From Server</label></div>
+    <div><input class="uiCheckbox" id="c2" type="checkbox" store uiID="autoPush" checked="true"> <label for="c2">Auto Push To Server</label></div>
+    <div><input class="uiCheckbox" id="c3" type="checkbox" store uiID="lockCards"> <label for="c3">Lock Cards</label></div>
+    <div><input class="uiCheckbox" id="c4" type="checkbox" store uiID="autoCalc" checked="true"> <label for="c4">Auto Calculate</label></div>
 </div>
 <div uiID="monster" class="flexContainer">
     <div uiID="" class="flexContainer">
@@ -82,6 +82,11 @@
     <button type="button" id="pullAll" pull>Pull All</button>
 </div>
 
+<div uiID="monster" class="flexContainer">
+    <div uiID=""><input class="monsterCheckbox" id="c5" type="checkbox" store uiID="removeMax"> <label for="c5">Remove Max Value</label></div>
+    <div uiID=""><input class="monsterCheckbox" id="c6" type="checkbox" store uiID="rerollZeros"> <label for="c6">Reroll All Zeros</label></div>
+    <div class="gridContainer" uiID=""><label>Mob multiplier:</label> <div class="counter" min="1" store uiID="mobMultiplier">1</div></div>
+</div>
 </body>
 
 <script type="module">
@@ -93,25 +98,20 @@
     import { loadTableGraphic, loadTableList} from "/scripts/table.mjs";
     applyArrayHelperFuncions();
 
-    function updateUI(res){
-        let chanceAtleast = res.prob.reversecumsum();
-        let chanceAtleastMaxRemoved = res.probMaxRemoved.reversecumsum();
-        loadTableGraphic("Chance Graph of at least x", [chanceAtleast,chanceAtleastMaxRemoved], false);
-        loadTableGraphic("Chance Graph of exactly x", [res.prob,res.probMaxRemoved],false);
-        loadTableList("Chance Table of at least y or more",[chanceAtleast,chanceAtleastMaxRemoved,], ['y','% to get y+','% to get y+<br>max removed'], false);
-        loadTableList("Chance Table of exactly y",[res.prob,res.probMaxRemoved], ['y','% to get y','% to get y<br>max removed'], false);
+    function updateUI(prob){
+        let chanceAtleast = prob.reversecumsum();
+
+        loadTableGraphic("Graph of exactly x", [prob],true);
+        loadTableGraphic("Graph of at least x", [chanceAtleast], false);
+        loadTableList("Table of exactly x",[prob], ['x','% to get x'], false);
+        loadTableList("Table of at least x or more",[chanceAtleast], ['x','% to get x+'], false);
 
         let defense = Array.fromRange(1,18,1); //calculate for defense values between 2 and 10
-        let damageProb = defense.map((e)=>{return res.prob.collectBy((index)=>Math.floor(index/e))});
-        let damageProbMaxRemoved = defense.map((e)=>{return res.probMaxRemoved.collectBy((index)=>Math.floor(index/e))});
-
+        let damageProb = defense.map((e)=>{return prob.collectBy((index)=>Math.floor(index/e))});
         let damageProbT = damageProb.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
-        let damageProbTmr = damageProbMaxRemoved.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
 
-        loadTableList("Chance of y Damage given x Defense",damageProbT, ['defense→ <br> damage⤵', ...defense],true);
-        loadTableList("Chance of y Damage given x Defense<br>(max removed)",damageProbTmr, ['defense→ <br> damage⤵', ...defense],false);
-        loadTableList("Chance of y Damage given x Defense<br>Full Table",damageProb, ['defense→ <br> damage⤵', ...defense],false);
-        loadTableList("Chance of y Damage given x Defense<br>Full Table (max removed)",damageProbMaxRemoved, ['defense→ <br> damage⤵', ...defense],false);
+        loadTableList("Damage for given Defense",damageProbT, ['defense→ <br> damage⤵', ...defense],true);
+        loadTableList("Damage given Defense<br>Full Table",damageProb, ['defense→ <br> damage⤵', ...defense],false);
     }
 
     function monsterCalc(){
@@ -129,10 +129,10 @@
             return {
                 deckCards,
                 discardCards,
-                toDraw: d.might
+                toDraw: d.might*obj.mobMultiplier
             }
         })
-        startWork(probCheckMonster,'scripts/monsterProb.mjs',[cardCopy], updateUI);
+        startWork(probCheckMonster,'scripts/monsterProb.mjs',[cardCopy,obj.removeMax,obj.rerollZeros], updateUI);
     }
 
     setCalcFn(monsterCalc);

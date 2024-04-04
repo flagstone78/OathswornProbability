@@ -6,13 +6,12 @@ self.onmessage = (e) => {
     postMessage(res);
 }
 
-function probCheckMonster(cards, iterations=1000000){
+function probCheckMonster(cards, removeMax=false, rerollZeros=false, iterations=1000000){
     applyArrayHelperFuncions();
     if(cards == undefined) return {prob:[],probMaxRemoved:[]};
     //console.log(deckCards, discardCards);
     //count scores over many iterations
     let scoreCount = [];
-    let scoreCountMaxRemoved = [];
     for(let i=0;i<iterations;i++){
         let score = 0;
         let biggestCard = 0;
@@ -25,31 +24,28 @@ function probCheckMonster(cards, iterations=1000000){
                 deck.forEach(v => {
                     score += v;
                     if(v>biggestCard) biggestCard = v;
+                    if(v!=0 || !rerollZeros) numToDraw--;
                 });
-                numToDraw -= deck.length; //pick less cards from the discard pile
                 deck = v.discardCards; //switch deck to discard pile
             }
             if(numToDraw>0){ //if there are still cards to draw
-                deck.shuffle(numToDraw).forEach(v=>{
+                deck.shuffle().some(v=>{
                     score += v;
                     if(v>biggestCard) biggestCard=v;
+                    if(v!=0 || !rerollZeros) numToDraw--;
+                    return !numToDraw;
                 }) //shuffle then sum n elements
             }
         }
+        if(removeMax) score -= biggestCard;
         (scoreCount[score]) ? scoreCount[score]+=1 : scoreCount[score]=1; //increment count for score
-        score -= biggestCard;
-        (scoreCountMaxRemoved[score]) ? scoreCountMaxRemoved[score]+=1 : scoreCountMaxRemoved[score]=1; //increment count for score
     }
 
     let prob = scoreCount.map(val=>{
         return val*100/iterations;
     });
 
-    let probMaxRemoved = scoreCountMaxRemoved.map(val=>{
-        return val*100/iterations;
-    });
-
-    return {prob,probMaxRemoved};
+    return prob;
 }
 
 

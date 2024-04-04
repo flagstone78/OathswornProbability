@@ -27,7 +27,8 @@ function onCounterClick(e){if(e.sync) sendUIobj(e.getUIobj())}
 
 document.querySelectorAll(".counter").forEach(e=>{addCounterUIProperties(e, UIchange, onCounterClick)});
 document.querySelectorAll(".limitedCounter").forEach(e=>{addLimitedCounterUIProperties(e, UIchange, onLimitedCounterClick, onLimitedCounterServerUpdate)});
-document.querySelectorAll("input[type=checkbox]").forEach(e=>{addCheckBoxUIProperties(e, uiVisibilityChange)});
+document.querySelectorAll(".uiCheckbox").forEach(e=>{addCheckBoxUIProperties(e, uiVisibilityChange)});
+document.querySelectorAll(".monsterCheckbox").forEach(e=>{addCheckBoxUIProperties(e, UIchange)});
 
 let pullButtons = document.querySelectorAll('button[pull]');
 let pushButtons = document.querySelectorAll('button[push]');
