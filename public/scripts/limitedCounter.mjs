@@ -1,6 +1,6 @@
 import { storeUIobj, getElementUIobj } from "./storage.mjs";
 
-function addUIProperties(e, onChangeFn, onClickFn){
+function addUIProperties(e, onChangeFn, onClickFn, onServerSetFn){
     let min = parseInt(e.getAttribute('min')) || 0;
     let max = parseInt(e.getAttribute('max')) || Infinity;
     e.sync = e.getAttribute('sync') !== null;
@@ -15,6 +15,11 @@ function addUIProperties(e, onChangeFn, onClickFn){
     displayElement.queue = (value)=>e.queue(value);
     displayElement.mergeQueue = (value)=>e.mergeQueue(value);
     displayElement.setValue = (value)=>e.setValue(value);
+    displayElement.serverSetValue = (value)=>e.serverSetValue(value);
+    e.serverSetValue = (val)=>{
+        e.queue(val);
+        onServerSetFn(e);
+    }
     function userSetValue(newVal){
         if(e.validate(newVal)) {
             e.setValue(newVal);

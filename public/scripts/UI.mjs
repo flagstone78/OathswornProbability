@@ -21,11 +21,12 @@ let autoPull = document.querySelector('input[uiID=autoPull]');
 let autoCalc = document.querySelector('input[uiID=autoCalc]');
 let lockCards = document.querySelector('input[uiID=lockCards]');
 
-
+function onLimitedCounterServerUpdate(e){ if(autoPull.checked) e.mergeQueue();}
 function onLimitedCounterClick(e){ if(e.sync && autoPush.checked) sendUIobj(e.getUIobj())}; //sync to server
+function onCounterClick(e){if(e.sync) sendUIobj(e.getUIobj())}
 
-document.querySelectorAll(".counter").forEach(e=>{addCounterUIProperties(e,UIchange)});
-document.querySelectorAll(".limitedCounter").forEach(e=>{addLimitedCounterUIProperties(e,UIchange,onLimitedCounterClick)});
+document.querySelectorAll(".counter").forEach(e=>{addCounterUIProperties(e, UIchange, onCounterClick)});
+document.querySelectorAll(".limitedCounter").forEach(e=>{addLimitedCounterUIProperties(e, UIchange, onLimitedCounterClick, onLimitedCounterServerUpdate)});
 document.querySelectorAll("input[type=checkbox]").forEach(e=>{addCheckBoxUIProperties(e, uiVisibilityChange)});
 
 let pullButtons = document.querySelectorAll('button[pull]');
@@ -57,7 +58,7 @@ function pushMultiple(elements){
                 child.queue(value);
             }
         });
-        if(Object.keys(toSend).length>0)sendToSever(toSend);
+        if(Object.keys(toSend).length>0)sendUIobj(toSend);
     }
 }
 document.querySelectorAll('legend button[push]').forEach(e=>{e.onclick = pushMultiple(e.parentNode.parentNode.querySelectorAll('.limitedCounter'))});
@@ -83,8 +84,7 @@ document.querySelectorAll(".limitedCounter, .counter, input[type=checkbox]").for
 
 function recieveUIobj(obj){
     console.log("recievedUIOBJ:", JSON.stringify(obj));
-    getElementsByObj(obj,(e,val)=>{e.queue(val);})
-    if(autoPull.checked) getElementsByObj(obj,(e,val)=>{e.mergeQueue()})
+    getElementsByObj(obj,(e,val)=>{ e.serverSetValue(val)})
 }
 
 function UIchange(){
