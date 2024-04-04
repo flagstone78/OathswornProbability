@@ -41,7 +41,7 @@ app.post("/json/player",express.json(),function(req,res){
     let obj = {player:ivonToCache(req.body)};
     console.log("post parsed",JSON.stringify(obj))
     recieveObj(obj);
-    sendToAllButSender(JSON.stringify(obj),255);
+    sendToAllButSender(JSON.stringify(obj),"");
     res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
 })
 // app.get("/json/monster",function(req,res){
@@ -75,7 +75,7 @@ sockserver.on('connection', ws => {
 function sendToAllButSender(data,id){
     console.log(`distributing message: ${data}`)
     sockserver.clients.forEach(client => {
-        if(client.clientId != id) client.send(`${data}`)
+        if(client.clientId !== id) client.send(`${data}`)
     })
 }
 
