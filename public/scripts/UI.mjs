@@ -54,7 +54,7 @@ function pushMultiple(elements){
         elements.forEach(child=>{
             let value = child.getValue();
             if( value != child.queueValue) {
-                toSend.merge(getElementUIobj(child, value));
+                toSend.merge(child.getUIobj());
                 child.queue(value);
             }
         });

@@ -80,11 +80,12 @@ function sendToAllButSender(data,id){
 }
 
 function storeData(data){
+    let arr;
     try{
-        let arr = JSON.parse(data);
-        if(!(arr instanceof Array) && (arr instanceof Object)) recieveObj(arr);
-        else if(arr.length==3) recieveFromAll(...arr);
-    } catch{}
+        arr = JSON.parse(data);
+    } catch{ console.warn("could not parse JSON")}
+    if(!(arr instanceof Array) && (arr instanceof Object)) try {recieveObj(arr)} catch(e){console.warn("Could not recieve ui obj",e)}
+    else if(arr.length==3) try{recieveFromAll(...arr)}catch(e){console.warn("Could not recieve individual key",e)};
 }
 
 
