@@ -17,7 +17,7 @@ function probCheckMonster(cards, removeMax=false, rerollZeros=false, iterations=
         let biggestCard = 0;
         //shuffle and choose randomly
         for(const [k,v] of Object.entries(cards)){
-            if(v == undefined) return {prob:[],probMaxRemoved:[]};
+            if(v == undefined) return [];
             let numToDraw = v.toDraw;
             let deck = v.deckCards;
             if(numToDraw >= deck.length){ //if we pick the whole deck, sum the whole deck then use the discard pile
