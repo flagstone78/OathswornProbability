@@ -69,6 +69,7 @@ sockserver.on('connection', ws => {
   }
   sendAll(ws);
   ws.send(JSON.stringify({player:cachedValues.player}))
+  ws.send(JSON.stringify({monster:cachedValues.monster}))
 })
 
 function sendToAllButSender(data,id){
