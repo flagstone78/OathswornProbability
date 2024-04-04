@@ -1,4 +1,4 @@
-import {applyArrayHeperFuncions} from "./arrayHelpers.mjs"
+import {applyArrayHelperFuncions} from "./arrayHelpers.mjs"
 console.log("monsterprob loaded")
 self.onmessage = (e) => {
     //console.log('Worker: Message received from main script');
@@ -7,7 +7,7 @@ self.onmessage = (e) => {
 }
 
 function probCheckMonster(cards, iterations=1000000){
-    applyArrayHeperFuncions();
+    applyArrayHelperFuncions();
     if(cards == undefined) return {prob:[],probMaxRemoved:[]};
     //console.log(deckCards, discardCards);
     //count scores over many iterations
