@@ -86,14 +86,12 @@
 
 <script type="module">
     import setCalcFn from "/scripts/UI.mjs";
-    import {monsterCalcs} from "/scripts/monsterCalc.mjs"
     import {getStoredUIvalue} from "/scripts/storage.mjs"
-
     import { startWork } from "/scripts/worker.mjs";
     import { probCheckMonster } from "/scripts/monsterProb.mjs";
     import {applyArrayHelperFuncions} from "/scripts/arrayHelpers.mjs"
     import { loadTableGraphic, loadTableList} from "/scripts/table.mjs";
-    //applyArrayHelperFuncions();
+    applyArrayHelperFuncions();
 
     function updateUI(res){
         let chanceAtleast = res.prob.reversecumsum();
