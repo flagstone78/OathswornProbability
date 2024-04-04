@@ -25,12 +25,13 @@ function barChartHtml(chartName, chartid){
     elem.id = chartid;
     elem.innerHTML = 
         `<table>
-            <caption onclick="toggleTable(this.parentElement)">${chartName}</caption>
+            <caption>${chartName}</caption>
             <tbody>
                 <tr class="bars"></tr>
                 <tr class="values"></tr>
             </tbody>
         </table>`;
+    elem.onclick = ()=>{toggleTable(elem)}
     return elem; 
 }
 
@@ -81,10 +82,11 @@ function tableHtml(tableName, tableid){
     elem.id = tableid;
     elem.innerHTML = 
         `<table>
-        <caption onclick="toggleTable(this.parentElement)"><span>${tableName}</span></caption>
+        <caption><span>${tableName}</span></caption>
         <thead></thead>
         <tbody></tbody>
         </table>`;
+    elem.onclick = ()=>{toggleTable(elem)}
     return elem;
 }
 
@@ -135,15 +137,20 @@ function loadTableList(tableName, objArr, colHeader, toShow=true) {
     table.querySelector('tbody').innerHTML = tableData;
 }
 
-window.toggleTable = (e)=>{
+function toggleTable(e){
     let tbody = e.querySelector('tbody');
     let thead = e.querySelector('thead');
+    let caption = e.querySelector('caption');
     if(tbody.checkVisibility()){
         tbody.style.display='none';
         if(thead)thead.style.display='none';
+        caption.classList.remove('captionUp');
+        caption.classList.add('captionDown');
     } else {
         tbody.style.display='';
         if(thead)thead.style.display='';
+        caption.classList.add('captionUp');
+        caption.classList.remove('captionDown');
     }
 }
 
