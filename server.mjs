@@ -67,9 +67,7 @@ sockserver.on('connection', ws => {
   ws.onerror = function () {
     console.log('websocket error')
   }
-  sendAll(ws);
-  ws.send(JSON.stringify({player:cachedValues.player}))
-  ws.send(JSON.stringify({monster:cachedValues.monster}))
+  ws.send(JSON.stringify(cachedValues))
 })
 
 function sendToAllButSender(data,id){
@@ -88,51 +86,9 @@ function storeData(data){
     else if(arr.length==3) try{recieveFromAll(...arr)}catch(e){console.warn("Could not recieve individual key",e)};
 }
 
-
-let cachedValues = {
-    white:{},
-    black:{},
-    yellow:{},
-    red:{},
-    w0:{},
-    w1:{},
-    w2:{},
-    wc:{},
-    y0:{},
-    y1:{},
-    y2:{},
-    y3:{},
-    yc:{},
-    r0:{},
-    r2:{},
-    r3:{},
-    rc:{},
-    b0:{},
-    b3:{},
-    b4:{},
-    bc:{},
-}
+let cachedValues = {}
 
 function recieveObj(obj){
     cachedValues.merge(obj);
     //console.log(JSON.stringify(cachedValues.player));
-}
-
-function recieveFromAll(id,key,value){
-    switch(key){
-        case 'numInDiscard':
-            if(cachedValues[id] != undefined && Number.isInteger(value)) cachedValues[id][key] = value;
-            break;
-        case 'toDraw':
-            if(cachedValues[id] != undefined && Number.isInteger(value)) cachedValues[id][key] = value;
-            break;
-    }
-}
-
-function sendAll(client){
-    for(let id in cachedValues){
-        for(let key in cachedValues[id]){
-            client.send(JSON.stringify([id,key,cachedValues[id][key]]));
-        }
-    }
 }
