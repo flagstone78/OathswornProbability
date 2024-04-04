@@ -1,3 +1,5 @@
+import { storeUIobj, getStoredUIvalue } from "./storage.mjs";
+
 /* <div id="monsterTableGraph" class="barChart">
     <table>
         <caption onclick="toggleTable(this)">Chance of at least x</caption>
@@ -18,11 +20,11 @@
 
 let invalidIdChars = /[\s(),<>]/g;
 
-function barChartHtml(chartName, chartid){
-    if((invalidIdChars).test(chartid)) throw "bar chart id cannot contain spaces";
+function barChartHtml(chartName, chartId){
+    if((invalidIdChars).test(chartId)) throw "bar chart id cannot contain spaces";
     let elem = document.createElement('div');
     elem.className = "barChart";
-    elem.id = chartid;
+    elem.id = chartId;
     elem.innerHTML = 
         `<table>
             <caption>${chartName}</caption>
@@ -31,17 +33,21 @@ function barChartHtml(chartName, chartid){
                 <tr class="values"></tr>
             </tbody>
         </table>`;
-    elem.onclick = ()=>{toggleTable(elem)}
+    elem.onclick = ()=>{
+        toggleTable(elem)
+        storeUIobj({[chartId]:elem.querySelector('tbody').checkVisibility()})
+    }
     return elem; 
 }
 
 //objArr in the form of [{x1:y1, x2:y2},{x1:y1, x3:y3}]
-function loadTableGraphic(chartName, objArr, toShow=true) {
+function loadTableGraphic(chartName, objArr) {
     let chartId = chartName.replaceAll(invalidIdChars,'_');
     let table = document.querySelector('#'+chartId);
     if(!table){
         table = barChartHtml(chartName, chartId);
-        if(!toShow) table.querySelector('tbody').style.display='none';
+        let toShow = getStoredUIvalue({[chartId]:undefined});
+        toShow? showTable(table) : hideTable(table);
         document.body.appendChild(table);
     }
 
@@ -75,28 +81,32 @@ function loadTableGraphic(chartName, objArr, toShow=true) {
 </table>
 </div> */
 
-function tableHtml(tableName, tableid){
-    if((invalidIdChars).test(tableid)) throw "bar chart id cannot contain spaces";
+function tableHtml(tableName, tableId){
+    if((invalidIdChars).test(tableId)) throw "bar chart id cannot contain spaces";
     let elem = document.createElement('div');
     elem.className = "dataTable";
-    elem.id = tableid;
+    elem.id = tableId;
     elem.innerHTML = 
         `<table>
         <caption><span>${tableName}</span></caption>
         <thead></thead>
         <tbody></tbody>
         </table>`;
-    elem.onclick = ()=>{toggleTable(elem)}
+    elem.onclick = ()=>{
+        toggleTable(elem);
+        storeUIobj({[tableId]:elem.querySelector('tbody').checkVisibility()})
+    }
     return elem;
 }
 
-function loadTableList(tableName, objArr, colHeader, toShow=true) {
+function loadTableList(tableName, objArr, colHeader) {
     let tableId = tableName.replaceAll(invalidIdChars,'_');
     let table = document.querySelector('#'+tableId);
     if(!table){
         table = tableHtml(tableName, tableId);
         document.body.appendChild(table);
-        if(!toShow) toggleTable(table);//table.querySelector('tbody').style.display='none';
+        let toShow = getStoredUIvalue({[tableId]:undefined});
+        toShow ? showTable(table) : hideTable(table);//table.querySelector('tbody').style.display='none';
     }
 
     let keys = new Set();
@@ -139,19 +149,29 @@ function loadTableList(tableName, objArr, colHeader, toShow=true) {
 
 function toggleTable(e){
     let tbody = e.querySelector('tbody');
+    if(tbody.checkVisibility()){ 
+        hideTable(e);
+    } else {showTable(e)}
+}
+
+function showTable(e){
+    let tbody = e.querySelector('tbody');
     let thead = e.querySelector('thead');
     let caption = e.querySelector('caption');
-    if(tbody.checkVisibility()){
-        tbody.style.display='none';
-        if(thead)thead.style.display='none';
-        caption.classList.remove('captionUp');
-        caption.classList.add('captionDown');
-    } else {
-        tbody.style.display='';
-        if(thead)thead.style.display='';
-        caption.classList.add('captionUp');
-        caption.classList.remove('captionDown');
-    }
+    tbody.style.display='';
+    if(thead)thead.style.display='';
+    caption.classList.add('captionUp');
+    caption.classList.remove('captionDown');
+}
+
+function hideTable(e){
+    let tbody = e.querySelector('tbody');
+    let thead = e.querySelector('thead');
+    let caption = e.querySelector('caption');
+    tbody.style.display='none';
+    if(thead)thead.style.display='none';
+    caption.classList.remove('captionUp');
+    caption.classList.add('captionDown');
 }
 
 export{loadTableGraphic, loadTableList}

@@ -101,17 +101,17 @@
     function updateUI(prob){
         let chanceAtleast = prob.reversecumsum();
 
-        loadTableGraphic("Graph of exactly x", [prob],true);
-        loadTableGraphic("Graph of at least x", [chanceAtleast], false);
-        loadTableList("Table of exactly x",[prob], ['x','% to get x'], false);
-        loadTableList("Table of at least x or more",[chanceAtleast], ['x','% to get x+'], false);
+        loadTableGraphic("Graph of exactly x", [prob]);
+        loadTableGraphic("Graph of at least x", [chanceAtleast]);
+        loadTableList("Table of exactly x",[prob], ['x','% to get x']);
+        loadTableList("Table of at least x or more",[chanceAtleast], ['x','% to get x+']);
 
         let defense = Array.fromRange(1,18,1); //calculate for defense values between 2 and 10
         let damageProb = defense.map((e)=>{return prob.collectBy((index)=>Math.floor(index/e))});
         let damageProbT = damageProb.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
 
-        loadTableList("Damage for given Defense",damageProbT, ['defense→ <br> damage⤵', ...defense],true);
-        loadTableList("Damage given Defense<br>Full Table",damageProb, ['defense→ <br> damage⤵', ...defense],false);
+        loadTableList("Damage for given Defense",damageProbT, ['defense→ <br> damage⤵', ...defense]);
+        loadTableList("Damage given Defense<br>Full Table",damageProb, ['defense→ <br> damage⤵', ...defense]);
     }
 
     function monsterCalc(){
