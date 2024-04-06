@@ -13,23 +13,23 @@ function cacheToIvon(cacheObj){
         red_deck:{'0':0,'2':0,'3':0,'r':0},
         black_deck:{'0':0,'3':0,'4':0,'b':0},
     }
-    let wval =cacheObj?.deck?.white?.discard?.map((val)=>{return val.discarded});
+    let wval =cacheObj?.deck?.white?.discard?.map((val)=>{return parseInt(val.discarded)||0});
     if(wval) obj.white_deck.merge(wval);
-    let yval = cacheObj?.deck?.yellow?.discard?.map((val)=>{return val.discarded});
+    let yval = cacheObj?.deck?.yellow?.discard?.map((val)=>{return parseInt(val.discarded)||0});
     if(yval) obj.yellow_deck.merge(yval);
-    let rval = cacheObj?.deck?.red?.discard?.map((val)=>{return val.discarded});
+    let rval = cacheObj?.deck?.red?.discard?.map((val)=>{return parseInt(val.discarded)||0});
     if(rval) obj.red_deck.merge(rval);
-    let bval = cacheObj?.deck?.black?.discard?.map((val)=>{return val.discarded});
+    let bval = cacheObj?.deck?.black?.discard?.map((val)=>{return parseInt(val.discarded)||0});
     if(bval) obj.black_deck.merge(bval);
     return obj;
 }
 
 function ivonToCache(bodyObj){
     let obj = {};
-    if(bodyObj.white_deck) obj.white = {discard: bodyObj.white_deck.map(val=>{return {discarded:val}})}
-    if(bodyObj.yellow_deck) obj.yellow = {discard: bodyObj.yellow_deck.map(val=>{return {discarded:val}})}
-    if(bodyObj.red_deck) obj.red = {discard: bodyObj.red_deck.map(val=>{return {discarded:val}})}
-    if(bodyObj.black_deck) obj.black = {discard: bodyObj.black_deck.map(val=>{return {discarded:val}})}
+    if(bodyObj.white_deck) obj.white = {discard: bodyObj.white_deck.map(val=>{return {discarded:parseInt(val)||0}})}
+    if(bodyObj.yellow_deck) obj.yellow = {discard: bodyObj.yellow_deck.map(val=>{return {discarded:parseInt(val)||0}})}
+    if(bodyObj.red_deck) obj.red = {discard: bodyObj.red_deck.map(val=>{return {discarded:parseInt(val)||0}})}
+    if(bodyObj.black_deck) obj.black = {discard: bodyObj.black_deck.map(val=>{return {discarded:parseInt(val)||0}})}
     return obj;
 }
 
