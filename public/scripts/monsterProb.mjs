@@ -6,7 +6,7 @@ self.onmessage = (e) => {
     postMessage(res);
 }
 
-function probCheckMonster(cards, removeMax=false, rerollZeros=false, iterations=1000000){
+function probCheckMonster(cards, removeMax=false, rerollAllZeros=false, iterations=1000000){
     applyArrayHelperFuncions();
     if(cards == undefined) return [];
     console.log(cards);
@@ -20,19 +20,20 @@ function probCheckMonster(cards, removeMax=false, rerollZeros=false, iterations=
             if(v == undefined) return [];
             let numToDraw = v.toDraw;
             let deck = v.deckCards;
+            let zerosToReroll = (rerollAllZeros)? Infinity : v.rerollZeros;
+            function tally(v){
+                score += v;
+                if(v>biggestCard) biggestCard = v;
+                if(v!=0 || zerosToReroll <= 0) numToDraw--;
+                else zerosToReroll--;
+            }
             if(numToDraw >= deck.length){ //if we pick the whole deck, sum the whole deck then use the discard pile
-                deck.forEach(v => {
-                    score += v;
-                    if(v>biggestCard) biggestCard = v;
-                    if(v!=0 || !rerollZeros) numToDraw--;
-                });
+                deck.forEach(v => {tally(v)});
                 deck = v.discardCards; //switch deck to discard pile
             }
             if(numToDraw>0){ //if there are still cards to draw
                 deck.shuffle().some(v=>{
-                    score += v;
-                    if(v>biggestCard) biggestCard=v;
-                    if(v!=0 || !rerollZeros) numToDraw--;
+                    tally(v);
                     return !numToDraw;
                 }) //shuffle then sum n elements
             }
