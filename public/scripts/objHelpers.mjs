@@ -37,6 +37,15 @@ function applyObjHelperFuncions(){
         )
     }})
 
+    Object.defineProperty(Object.prototype, 'compare',{value:function(obj){
+        if(this === obj) return true
+        if(typeof obj !== 'object') return false
+        for(const key in this){
+            if(typeof this[key] === 'object') {
+                if(!this[key].compare(obj[key])) return false;
+            } else return this[key] === obj[key]
+        }
+    }})
 }
 
 export{applyObjHelperFuncions, isObject}
