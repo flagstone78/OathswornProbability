@@ -1,10 +1,9 @@
 import { applyObjHelperFuncions } from "./public/scripts/objHelpers.mjs";
+import {secrets} from "./secrets.mjs"
 applyObjHelperFuncions();
 
 import express from 'express';
 const app = express();
-const httpPort = 3000;
-const wsPort = 3001;
 
 function cacheToIvon(cacheObj){
     let obj = {
@@ -33,6 +32,19 @@ function ivonToCache(bodyObj){
     return obj;
 }
 
+app.post("/admin/restart", express.text(), function(req,res){
+    if(secrets.restartKey && req.body === secrets.restartKey) {
+        httpServer.keepAliveTimeout = 1;
+        httpServer.close();
+        sockserver.close();
+    }
+    res.sendStatus(200);
+})
+
+app.get("/admin/wsPort",function(req,res){
+    res.send(JSON.stringify(secrets.wsPort));
+})
+
 app.get("/json/player",function(req,res){
     res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
 })
@@ -53,11 +65,11 @@ app.post("/json/player",express.json(),function(req,res){
 // })
 app.use(express.static('public'));
 app.use(express.static('rules'));
-app.listen(httpPort, () => console.log(`Listening on ${httpPort}`));
+const httpServer = app.listen(secrets.httpPort, () => console.log(`HTTP Listening on ${secrets.httpPort}`));
 
 let clientIdCounter = new Uint8Array(1); //max of 256 connections
 import { WebSocketServer } from 'ws';
-const sockserver = new WebSocketServer({ port: wsPort })
+const sockserver = new WebSocketServer({ port: secrets.wsPort },()=>console.log(`Web Socket Listening on ${secrets.wsPort}`))
 sockserver.on('connection', ws => {
   console.log('New client connected!')
   let id = clientIdCounter[0]++;

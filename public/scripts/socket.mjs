@@ -1,5 +1,5 @@
 import { isObject } from "./objHelpers.mjs";
-let websocketPort = 3001;
+let websocketPort = await fetch(`${window.location.origin}/admin/wsPort`,{method:'GET'}).then(res=>res.json());
 let hostname = location.hostname || "localhost";
 let socket={};
 

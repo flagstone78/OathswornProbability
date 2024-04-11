@@ -131,3 +131,4 @@ rules/EncounterSymbols/*
 rules/StorySymbols/*
 storyRules/images/*
 notes.txt
+secrets.mjs
