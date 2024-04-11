@@ -46,6 +46,16 @@ function applyObjHelperFuncions(){
             } else return this[key] === obj[key]
         }
     }})
+
+    Object.defineProperty(Object.prototype, 'copy',{value:function(){
+        let ret = {};
+        for(const key in this){
+            if(typeof this[key] === 'object') {
+                ret[key] = this[key].copy();
+            } else ret[key] = this[key]
+        }
+        return ret;
+    }})
 }
 
 export{applyObjHelperFuncions, isObject}
