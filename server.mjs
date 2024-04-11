@@ -14,13 +14,13 @@ function cacheToIvon(cacheObj){
         black_deck:{'0':0,'3':0,'4':0,'b':0},
     }
     let wval =cacheObj?.deck?.white?.discard?.map((val)=>{return parseInt(val.discarded)||0});
-    if(wval) obj.white_deck.merge(wval);
+    if(wval) obj.white_deck = obj.white_deck.map((v,i)=>wval[i]||v);
     let yval = cacheObj?.deck?.yellow?.discard?.map((val)=>{return parseInt(val.discarded)||0});
-    if(yval) obj.yellow_deck.merge(yval);
+    if(yval) obj.yellow_deck = obj.yellow_deck.map((v,i)=>yval[i]||v);
     let rval = cacheObj?.deck?.red?.discard?.map((val)=>{return parseInt(val.discarded)||0});
-    if(rval) obj.red_deck.merge(rval);
+    if(rval) obj.red_deck = obj.red_deck.map((v,i)=>rval[i]||v);
     let bval = cacheObj?.deck?.black?.discard?.map((val)=>{return parseInt(val.discarded)||0});
-    if(bval) obj.black_deck.merge(bval);
+    if(bval) obj.black_deck = obj.black_deck.map((v,i)=>bval[i]||v);
     return obj;
 }
 
