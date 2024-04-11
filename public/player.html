@@ -18,15 +18,15 @@
             <legend>White</legend>
             <fieldset uiID="discard" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
-                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
+                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0" isFail>0</div><div>0</div>
                 <div>Discarded 1s:</div><div class="limitedCounter" sync uiID="1" max="6" points="1">0</div><div>0</div>
                 <div>Discarded 2s:</div><div class="limitedCounter" sync uiID="2" max="3" points="2">0</div><div>0</div>
-                <div>Discarded{2}s</div><div class="limitedCounter" sync uiID="w" max="3" points="2">0</div><div>0</div>
+                <div>Discarded{2}s</div><div class="limitedCounter" sync uiID="w" max="3" points="2" isCrit>0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label> <div>1.16</div>
                 <label>Dice Average:</label> <div>1.16</div>
-                <label>Might:</label><div class="counter" uiID="might" store>18</div>
+                <label>Might:</label><div class="counter" uiID="might" store>13</div>
                 <!-- <label>Dice:</label><div class="counter">0</div>
                 <label>Deck:</label><div class="counter">0</div> -->
             </div>
@@ -36,11 +36,11 @@
             <legend>Yellow</legend>
             <fieldset uiID="discard" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
-                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
+                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0" isfail>0</div><div>0</div>
                 <div>Discarded 1s:</div><div class="limitedCounter" sync uiID="1" max="3" points="1">0</div><div>0</div>
                 <div>Discarded 2s:</div><div class="limitedCounter" sync uiID="2" max="3" points="2">0</div><div>0</div>
                 <div>Discarded 3s:</div><div class="limitedCounter" sync uiID="3" max="3" points="3">0</div><div>0</div>
-                <div>Discarded{3}s</div><div class="limitedCounter" sync uiID="y" max="3" points="3">0</div><div>0</div>
+                <div>Discarded{3}s</div><div class="limitedCounter" sync uiID="y" max="3" points="3" iscrit>0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label> <div>1.74</div>
@@ -56,10 +56,10 @@
             <legend>Red</legend>
             <fieldset uiID="discard" class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
-                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
+                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0" isfail>0</div><div>0</div>
                 <div>Discarded 2s:</div><div class="limitedCounter" sync uiID="2" max="3" points="2">0</div><div>0</div>
                 <div>Discarded 3s:</div><div class="limitedCounter" sync uiID="3" max="6" points="3">0</div><div>0</div>
-                <div>Discarded{4}s</div><div class="limitedCounter" sync uiID="r" max="3" points="4">0</div><div>0</div>
+                <div>Discarded{4}s</div><div class="limitedCounter" sync uiID="r" max="3" points="4" iscrit>0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label> <div>2.31</div>
@@ -73,10 +73,10 @@
             <legend>Black</legend>
             <fieldset uiID="discard"class="subgrid">
                 <legend>Deck <button type="button" reset>Reset</button> <button type="button" push>Push</button> <button type="button" pull>Pull</button></legend>
-                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0">0</div><div>0</div>
+                <div>Discarded 0s:</div><div class="limitedCounter" sync uiID="0" max="6" points="0" isfail>0</div><div>0</div>
                 <div>Discarded 3s:</div><div class="limitedCounter" sync uiID="1" max="6" points="3">0</div><div>0</div>
                 <div>Discarded 4s:</div><div class="limitedCounter" sync uiID="2" max="3" points="4">0</div><div>0</div>
-                <div>Discarded{5}s</div><div class="limitedCounter" sync uiID="b" max="3" points="5">0</div><div>0</div>
+                <div>Discarded{5}s</div><div class="limitedCounter" sync uiID="b" max="3" points="5" iscrit>0</div><div>0</div>
             </fieldset>
             <div class="gridContainer" uiID="">
                 <label>Deck Average:</label><div class="numberResult" uiID="average">2.89</div>
@@ -91,6 +91,7 @@
 <div uiID = "player" class="flexContainer">
     <div class="gridContainer" uiID=""><label>Rerolls</label><div class="counter" uiID="rerolls" store>0</div></div>
     <div class="gridContainer" uiID=""><label>Empowers</label><div class="counter" uiID="empowers" store>0</div></div>
+    <div class="gridContainer" uiID=""><label>Score At Least</label><div class="counter" uiID="atLeast" store>0</div></div>
 </div>
 <div class="flexContainer">
     <button type="button" id="pushAll" push>Push All</button>
@@ -99,4 +100,49 @@
 </div>
 
 </body>
-<script type="module" src="/scripts/UI.mjs"></script>
+
+<script type="module">
+    import setCalcFn from "/scripts/UI.mjs";
+    import {getStoredUIvalue} from "/scripts/storage.mjs"
+    import { startWork } from "/scripts/worker.mjs";
+    import { probCheckPlayer } from "/scripts/playerProb.mjs";
+    import {applyArrayHelperFuncions} from "/scripts/arrayHelpers.mjs"
+    import { loadTableGraphic, loadTableList} from "/scripts/table.mjs";
+    applyArrayHelperFuncions();
+
+
+
+    function playerCalc(){
+        let obj = getStoredUIvalue({player:undefined});
+        console.log('do player calcs', obj);
+        //cardCopy = {white:{deckCards:[1,1,2,2],discardCards:[1,3],toDraw:1}}
+        let cardCopy = obj.deck.map(d=>{
+            return {
+                deck:d.discard,
+                toDraw: d.might,
+            }
+        })
+
+        function updateUI(prob){
+            console.log("results ", prob)
+            for(const color in prob){
+                let p = prob[color].map((deckArr,mdeck)=> deckArr.map((diceArr,mdice)=> diceArr
+                    .map((scoreArr,score)=> scoreArr.reduce((prev,v,fails)=>{
+                        if(fails <= obj.rerolls) prev += v||0;
+                        return prev;
+                    },0))
+                    .reduce((prev,scoreChance,score)=>{
+                        if(score >= obj.atLeast) prev += scoreChance||0;
+                        return prev;
+                    },0)
+                ));
+                loadTableList(`Exact ${color}`,p, ['deck→<br>dice⤵',...Array.fromRange(0,p.length-1,1)]);
+            }
+        }
+
+        startWork(probCheckPlayer,'scripts/playerProb.mjs',[cardCopy], updateUI);
+    }
+
+    setCalcFn(playerCalc);
+    playerCalc();
+</script>

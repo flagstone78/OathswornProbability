@@ -22,6 +22,20 @@ function applyArrayHelperFuncions(){
     Object.defineProperty(Array,'fromRange',{value: function(start,stop,step){
         return Array.from({length:(stop-start)/step +1}, (value,index)=>start+index*step);
     }});
+
+    Object.defineProperty(Array.prototype,'conv',{value: function(arr){
+        const length = this.length+arr.length-1;
+        return Array.from({length:length}, (value,index)=>{
+            const start = Math.max(0, index-(arr.length-1));
+            const end = Math.min(index, this.length-1);
+            let val = undefined;
+            for(let i=start; i<=end; i++){
+                const partial = this[i]*arr[index-i];
+                if(!isNaN(partial)) val = (val||0)+partial;
+            }
+            return val;
+        })
+    }});
 }
 
 const debounce = (callback, wait) => { //https://stackoverflow.com/questions/75988682/debounce-in-javascript

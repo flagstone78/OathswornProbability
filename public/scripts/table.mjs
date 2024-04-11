@@ -18,7 +18,7 @@ import { storeUIobj, getStoredUIvalue } from "./storage.mjs";
     </table>
 </div> */
 
-let invalidIdChars = /[\s(),<>]/g;
+let invalidIdChars = /[\s(),:<>]/g;
 
 function barChartHtml(chartName, chartId){
     if((invalidIdChars).test(chartId)) throw "bar chart id cannot contain spaces";

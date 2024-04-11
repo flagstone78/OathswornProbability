@@ -49,8 +49,24 @@ function addUIProperties(e, onChangeFn, onClickFn, onServerSetFn){
     e.initialize = ()=>{
         storeUIobj(e.getUIobj());
         e.queue(e.getValue());
-        if(hasMax) storeUIobj(getElementUIobj(e.childNodes[3], max));
-        if(e.getAttribute('points')!=null) storeUIobj(getElementUIobj(e, {points:parseInt(e.getAttribute('points'))}));
+        for(const n of e.getAttributeNames()){
+            switch(n){
+                case 'class':
+                case 'style':
+                case 'sync':
+                case 'store':
+                case 'uiid':
+                    break;
+                default:
+                    let val = e.getAttribute(n);
+                    if(val === '') storeUIobj(getElementUIobj(e, {[n]:true}))
+                    else {
+                        const valn = parseFloat(val);
+                        if(!isNaN(valn)) storeUIobj(getElementUIobj(e, {[n]:valn}))
+                        else storeUIobj(getElementUIobj(e, {[n]:val}))
+                    }
+            }
+        }
     }
 
     e.getUIobj= ()=>getElementUIobj(displayElement, e.getValue())
