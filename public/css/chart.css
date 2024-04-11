@@ -145,14 +145,14 @@
 
 .dataTable th{
     border: 1px solid rgb(71, 71, 71);
-    padding-right: 1cqi;
-    padding-left: 1cqi;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
     /* background-color: rgb(25, 25, 25); */
 }
 
 .dataTable td{
-    padding-right: 1cqi;
-    padding-left: 1cqi;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
     text-align:right;
 }
 
