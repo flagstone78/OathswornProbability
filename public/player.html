@@ -146,10 +146,10 @@
             oldProb = prob;
             updateUI(oldProb, obj.rerolls, obj.atLeast);
         }
-        
+
         if(obj.deck.compare(oldDeck)) updateUI(oldProb, obj.rerolls, obj.atLeast);
         else {
-            oldDeck = obj.deck;
+            oldDeck = obj.deck.copy();
             startWork(probCheckPlayer,'scripts/playerProb.mjs',[cardCopy], updateProb);
         }
     }
