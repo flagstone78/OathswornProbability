@@ -45,6 +45,7 @@ function applyObjHelperFuncions(){
                 if(!this[key].compare(obj[key])) return false;
             } else return this[key] === obj[key]
         }
+        return true;
     }})
 
     Object.defineProperty(Object.prototype, 'copy',{value:function(){
