@@ -10,4 +10,4 @@ jobs:
     steps:
       - name: Send Post Request
         run: |
-          curl -d ${{ secrets.restartCode }} -H "Content-Type: text/plain" -X POST ${{ secrets.serverAddress }}/admin/restart
+          curl -d "${{ secrets.restartCode }}" -H "Content-Type: text/plain" -X POST ${{ secrets.serverAddress }}/admin/restart
