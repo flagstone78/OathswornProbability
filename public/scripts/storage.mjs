@@ -1,7 +1,14 @@
 import { isObject } from "./objHelpers.mjs";
-if(localStorage.getItem('__uiObj') == null) localStorage.setItem('__uiObj','{}')
-let __uiObj=JSON.parse(localStorage.getItem('__uiObj'));
-window.__uiObj = __uiObj;
+
+function getUIobjFromStorage(){
+    if(localStorage.getItem('__uiObj') == null) localStorage.setItem('__uiObj','{}')
+    let obj=JSON.parse(localStorage.getItem('__uiObj'));
+    const __version = 1;
+    if(obj.__version !== __version) obj = {__version}
+    window.__uiObj = obj;
+    return obj;
+}
+let __uiObj = getUIobjFromStorage();
 
 window.onbeforeunload = function() {
     localStorage.setItem('__uiObj',JSON.stringify(__uiObj));
