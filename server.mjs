@@ -33,12 +33,13 @@ function ivonToCache(bodyObj){
 }
 
 app.post("/admin/restart", express.text(), function(req,res){
+    console.log("restart code", req.body);
     if(secrets.restartKey && req.body === secrets.restartKey) {
+        res.sendStatus(200);
         httpServer.keepAliveTimeout = 1;
         httpServer.close();
         sockserver.close();
-    }
-    res.sendStatus(200);
+    } else res.sendStatus(401);
 })
 
 app.get("/admin/wsPort",function(req,res){
