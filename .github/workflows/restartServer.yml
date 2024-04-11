@@ -1,0 +1,13 @@
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  sendRestartCode:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Send Post Request
+        run: |
+          curl -d ${{ secrets.restartKey }} -H "Content-Type: text/plain" -X POST ${{ secrets.serverAddress }}/admin/restart
