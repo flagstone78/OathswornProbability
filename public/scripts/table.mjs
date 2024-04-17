@@ -53,15 +53,14 @@ function loadTableGraphic(chartName, objArr) {
 
     let headers = '';
     let data = '';
-    let keys = new Set();
+    const keys = new Set();
     objArr.forEach(e=>{Object.keys(e).forEach(k=>{keys.add(k)})});
-    keys.forEach(k=>{
+    const keysSorted = Array.from(keys).sort((a,b)=>a-b);
+    keysSorted.forEach(k=>{
         headers += '<th>' + k + '</th>';
         data += '<td>';
-        let brightness = 100;
-        objArr.forEach(e => {
-            if(e[k]!= undefined) data += '<p style="filter:brightness('+ brightness +'%); height:' + e[k] + '%;">' + e[k].toFixed(0) + '</p>';
-            brightness *= 0.8;
+        objArr.forEach((e,i) => {
+            if(e[k]!= undefined) data += `<p style="filter:brightness(${100-i*10}%); height:${e[k]}%;">${e[k].toFixed(0)}</p>`;
         });
         //data += '<p style="height:' + keyObj[v] + '%;">' + keyObj[v].toFixed(0) + '</p>'
         data += '</td>';
