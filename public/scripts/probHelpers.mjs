@@ -5,21 +5,27 @@
 //
 // note: if you attempt to draw more of any type of card than exists in the deck, this will always return 0
 //
-// The calculation is as follows: 
-// note: ! is factorial, 
-//       d# is drawPile[#] which means the amount of that card type in the deck, 
-//       t# is toDraw[#] which means the amount of that card type that must be drawn
-//       The process must be computed for each card type
-//
-// The calculation for a deck with 4 card types:
-// prob = (  d1!    *   d2!    *    d3!    *   d4!    * (d1+d2+d3+d4-t1-t2-t3-t4)! * (t1+t2+t3+t4)!)/
-//        ((d1-t1)! * (d2-t2)! *  (d3-t3)! * (d4-t4)! * (d1+d2+d3+d4)! ) /
-//        (  t1!    *   t2!    *    t3!    *   t4!    )  
-//  or
-// prob = (d1:-1:d1-t1+1) * (d2:-1:d2-t2+1) * (d3:-1:d3-t3+1) * (d4:-1:d4-t4+1) * (          1: 1:t1+t2+t3+t4)/
-//           (1:1:t1)     *    (1:1:t2)     *    (1:1:t2)     *    (1:1:t2)     * (d1+d2+d3+d4:-1:d1+d2+d3+d4-t1-t2-t3-t4+1)
-// note: ranges are inclusive. ie 1:1:3 = 1*2*3
-// note: (1:1:0) = 1  (1:1:-1) = Infinity
+// Theory is as follows:
+//      The chance of pulling 1 card of d1 is: (d1)/(total)
+//      The chance of pulling 1 card of d1 then another of d1 in a row is: (d1*(d1-1))/((total-0)*(total-1))
+//      The chance of pulling 1 of d1 and then 1 card of d2 is: (d1 * d2) /((total-0)*(total-1))
+//        However, the order does not matter when pulling cards. We must multiply by the number of different ways to pull those cards.
+//      The chance of pulling 1 of d1 and 1 of d2 in any order is: (d1*d2 * 1*2)/((total-0)*(total-1))
+//      When drawing multiple of the same type, order does not matter
+//      The chance of drawing 3 of d1, 2 of d2, and 1 of d3 is: ((d1-0)*(d1-1)*(d1-2) * (d2-0)*(d2-1) * (d3-0) * 1*2*3*4*5*6)/((total-0)*(total-1)*(total-2)*(total-3)*(total-4)*(total-5)) 
+// The calculation can be done with factorials: 
+//      d# is drawPile[#] which means the amount of that card type in the deck, 
+//      t# is toDraw[#] which means the amount of that card type that must be drawn
+//      The process must be computed for each card type
+//      The calculation for a deck with 4 card types: note: ! is factorial, 
+//      prob = (  d1!    *   d2!    *    d3!    *   d4!    * (d1+d2+d3+d4-t1-t2-t3-t4)! * (t1+t2+t3+t4)!)/
+//             ((d1-t1)! * (d2-t2)! *  (d3-t3)! * (d4-t4)! * (d1+d2+d3+d4)! ) /
+//              (  t1!    *   t2!    *    t3!    *   t4!    )  
+//   or the calculation can be done with ranges:
+//      prob = (d1:-1:d1-t1+1) * (d2:-1:d2-t2+1) * (d3:-1:d3-t3+1) * (d4:-1:d4-t4+1) * (          1: 1:t1+t2+t3+t4)/
+//                (1:1:t1)     *    (1:1:t2)     *    (1:1:t2)     *    (1:1:t2)     * (d1+d2+d3+d4:-1:d1+d2+d3+d4-t1-t2-t3-t4+1)
+//      note: ranges are inclusive. ie 1:1:3 = 1*2*3
+//      note: (1:1:0) = 1  (1:1:-1) = Infinity
 //
 // example for a deck with 4 card types and pulling[4,1,2,3] from [6,6,3,3] cards: d=drawPile=[6,6,3,3], t=toDraw=[4,1,2,3]
 //   prob = (6*5*4*3 * 6 * 3*2 * 3*2*1 * 1 *2 *3 *4 *5 *6 *7 *8 *9 *10) 
