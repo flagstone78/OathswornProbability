@@ -130,4 +130,4 @@ export function testProb(){
     console.log('Equation matches recursive funtion', !diff.some(v=>v.some(w=>!w)), diff);
 }
 
-testProb();
+//testProb();
