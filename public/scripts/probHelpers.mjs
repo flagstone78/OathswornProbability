@@ -10,9 +10,9 @@
 //      The chance of pulling 1 card of d1 then another of d1 in a row is: (d1*(d1-1))/((total-0)*(total-1))
 //      The chance of pulling 1 of d1 and then 1 card of d2 is: (d1 * d2) /((total-0)*(total-1))
 //        However, the order does not matter when pulling cards. We must multiply by the number of different ways to pull those cards.
-//      The chance of pulling 1 of d1 and 1 of d2 in any order is: (d1*d2 * 1*2)/((total-0)*(total-1))
+//      The chance of pulling 1 of d1 and 1 of d2 in any order is: (d1*d2 * 1*2)/((total-0)*(total-1)*1*1)
 //      When drawing multiple of the same type, order does not matter
-//      The chance of drawing 3 of d1, 2 of d2, and 1 of d3 is: ((d1-0)*(d1-1)*(d1-2) * (d2-0)*(d2-1) * (d3-0) * 1*2*3*4*5*6)/((total-0)*(total-1)*(total-2)*(total-3)*(total-4)*(total-5)) 
+//      The chance of drawing 3 of d1, 2 of d2, and 1 of d3 is: ((d1-0)*(d1-1)*(d1-2) * (d2-0)*(d2-1) * (d3-0) * 1*2*3*4*5*6)/((total-0)*(total-1)*(total-2)*(total-3)*(total-4)*(total-5) * 1*2*3 * 1*2 * 1) 
 // The calculation can be done with factorials: 
 //      d# is drawPile[#] which means the amount of that card type in the deck, 
 //      t# is toDraw[#] which means the amount of that card type that must be drawn
@@ -50,10 +50,86 @@ export function drawXsFromPile(toDraw,drawPile){
             (drawnCardsEachStep * drawPileTotalEachStep));  //1*2*3*4 * 1 * 1*2 * 1*2*3  *  18*17*16*15*14*13*12*11*10*9
 }
 
+// example for a dice with 4 sides weighted by [6,6,3,3] and rolling [4,1,2,3] 
+//   prob = (6 *6 *6 *6  * 6  * 3*3  * 3 *3 *3  * 1*2*3*4 * 5 * 6*7 * 8*9*10) 
+//          (18*18*18*18 * 18 *18*18 * 18*18*18 * 1*2*3*4 * 1 * 1*2 * 1*2*3)  ==  0.0066681908245694215
+export function rollXsDice(roll, diceWeight){
+    const totalRolls = roll.reduce(sum,0);
+    const diceWeightSum = diceWeight.reduce(sum,0);
+    return roll.reduce((prev,rollCount,i)=>{
+        return prev * Math.pow( diceWeight[i]/diceWeightSum, rollCount ) / factorial(rollCount);
+    },factorial(totalRolls));
+}
 
+export function rollDice(diceWeightVector, might){
+    const probByMight = Array(might+1).fill().map(()=>[]);
+    
+    drawAll(Array(diceWeightVector.length).fill(might),(indexArr)=>{
+        const currentMight = indexArr.reduce(sum,0);
+        if(currentMight <= might){
+            const prob = rollXsDice(indexArr,diceWeightVector);
+            probByMight[currentMight].push([prob,indexArr]);
+        }
+    })
+    return probByMight;
+}
 
+export function drawDeck(drawPile,discPile,might){
+    const probByMight = Array(might+1).fill().map(()=>[]);
+    drawAll(drawPile,(indexArr)=>{
+        const currentMight = indexArr.reduce(sum,0);
+        if(currentMight <= might){
+            const prob = drawXsFromPile(indexArr,drawPile);
+            probByMight[currentMight].push([prob,indexArr]);
+        }
+    });
+    //calculate for discard pile
+    const drawPileMight = drawPile.reduce(sum,0);
+    if(might > drawPileMight) {
+        drawAll(discPile,(indexArr)=>{
+            const currentMight = drawPileMight + indexArr.reduce(sum,0);
+            if(currentMight <= might && currentMight > drawPileMight){
+                const prob = drawXsFromPile(indexArr,discPile);
+                probByMight[currentMight].push([prob,addArrays(indexArr,drawPile)]);
+            }
+        })
+    }
+    return probByMight
+}
 
-export function testProb(){
+function numToIndexArray(inum,maxValStates){
+    let ret = Array(maxValStates.length);
+    for(let i=0;i<maxValStates.length;i++){
+        const divBy = maxValStates[i];
+        const remainder = inum % divBy;
+        ret[i] = remainder;
+        inum = (inum-remainder)/divBy;
+    }
+    return ret;
+}
+
+function drawAll(pile, callback){
+    const pileStates = Array.from(pile,v=>v+1);
+    const pileCombinations = pileStates.reduce(mult,1);
+    for(let i=0;i<pileCombinations;i++){
+        const indexArr = numToIndexArray(i,pileStates);
+        callback(indexArr);
+    }
+}
+
+function sum(prev,v){return prev+v;}
+function mult(prev,v){return prev*v;}
+function addArrays(a1,a2){
+    const [shorterArray,longerArray] = (a1.length < a2.length)? [a1,a2]: [a2,a1];
+    const ret = Array.from(longerArray);
+    for(let i=0;i<shorterArray.length;i++){
+        ret[i] += shorterArray[i];
+    }
+    return ret;
+}
+
+//TODO: move these to a unit test framework
+export function testCardProb(){
     Object.defineProperty(Array,'fromDimensions',{value: function(sizeArr){
         if(sizeArr.length===0) return undefined;
         return Array(sizeArr[0]).fill().map(() => Array.fromDimensions(sizeArr.slice(1)));
@@ -125,9 +201,19 @@ export function testProb(){
     const diff = probByMight.map((mArr,i)=>mArr.map((v,j)=>{
         const [targetProb, indexArr] = v;
         const testProb = probFast[i][j];
-        return (testProb-targetProb)<1e-15;
+        return Math.abs(testProb-targetProb)<1e-15;
     }))
-    console.log('Equation matches recursive funtion', !diff.some(v=>v.some(w=>!w)), diff);
+    console.log('Equation matches recursive funtion', diff.every(v=>v.every(w=>w===true)), diff);
+
+    const probSums = probFast.map(v=>v.reduce(sum,0));
+    console.log('When drawing n cards, the sum of all probabilities should be 1', probSums.every(v=>Math.abs( v-1 ) < 1e-15));
 }
 
-//testProb();
+function testDiceProb(){
+    const prob = rollDice([6,6,3,3], 18);
+    const probSums = prob.map(v=>v.reduce((p,w)=>p+w[0],0));
+    console.log('When drawing n dice, the sum of all probabilities should be 1', probSums.every(v=>Math.abs( v-1 ) < 1e-14));
+}
+
+//testCardProb();
+//testDiceProb();
