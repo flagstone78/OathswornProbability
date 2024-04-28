@@ -108,12 +108,12 @@ function numToIndexArray(inum,maxValStates){
     return ret;
 }
 
-function drawAll(pile, callback){
+export function drawAll(pile, callback, additionalArgs=[]){
     const pileStates = Array.from(pile,v=>v+1);
     const pileCombinations = pileStates.reduce(mult,1);
     for(let i=0;i<pileCombinations;i++){
         const indexArr = numToIndexArray(i,pileStates);
-        callback(indexArr);
+        callback(indexArr,...additionalArgs);
     }
 }
 

@@ -90,8 +90,26 @@
 </div>
 <div uiID = "player" class="flexContainer">
     <div class="gridContainer" uiID=""><label>Score At Least</label><div class="counter" uiID="atLeast" store>0</div></div>
-    <div class="gridContainer" uiID=""><label>Allowable Zeros</label><div class="counter" uiID="rerolls" store>0</div></div>
+    <div class="gridContainer" uiID=""><label>Available Rerolls</label><div class="counter" uiID="rerolls" store>0</div></div>
     <!-- <div class="gridContainer" uiID=""><label>Empowers</label><div class="counter" uiID="empowers" store>0</div></div> -->
+</div>
+<div uiID = "player" class="flexContainer">
+    <div class="gridContainer" uiID="">
+        <label>White Deck:</label><div class="counter" uiID="wdeck" store>0</div>
+        <label>White Dice:</label><div class="counter" uiID="wdice" store>0</div>
+    </div>
+    <div class="gridContainer" uiID="">
+        <label>Yellow Deck:</label><div class="counter" uiID="ydeck" store>0</div>
+        <label>Yellow Dice:</label><div class="counter" uiID="ydice" store>0</div>
+    </div>
+    <div class="gridContainer" uiID="">
+        <label>Red Deck:</label><div class="counter" uiID="rdeck" store>0</div>
+        <label>Red Dice:</label><div class="counter" uiID="rdice" store>0</div>
+    </div>
+    <div class="gridContainer" uiID="">
+        <label>Black Deck:</label><div class="counter" uiID="bdeck" store>0</div>
+        <label>Black Dice:</label><div class="counter" uiID="bdice" store>0</div>
+    </div>
 </div>
 <div class="flexContainer">
     <button type="button" id="pushAll" push>Push All</button>
@@ -108,24 +126,36 @@
     import { probCheckPlayer } from "/scripts/playerProb.mjs";
     import {applyArrayHelperFuncions} from "/scripts/arrayHelpers.mjs"
     import { loadTableGraphic, loadTableList} from "/scripts/table.mjs";
-    applyArrayHelperFuncions();
+    if(!Array.fromRange) applyArrayHelperFuncions();
 
-    function updateUI(prob, rerolls, atLeast){
+    function updateUI(prob, rerolls, atLeast, wdice, wdeck, ydeck, ydice, rdeck, rdice, bdeck, bdice){
         oldProb = prob;
         console.log("results ", prob)
-        for(const color in prob){
-            let p = prob[color].map((deckArr,mdeck)=> deckArr.map((diceArr,mdice)=> diceArr
-                .map((scoreArr,score)=> scoreArr.reduce((prev,v,fails)=>{
-                    if(fails <= rerolls) prev += v||0;
-                    return prev;
-                },0))
-                .reduce((prev,scoreChance,score)=>{
-                    if(score >= atLeast) prev += scoreChance||0;
+        window.prob = prob;
+        try{
+            const specific = prob[wdeck][wdice][ydeck][ydice][rdeck][rdice][bdeck][bdice];
+            console.log('specific', specific)
+            loadTableGraphic(`Specific`,[specific.map(v=>v*100)]);
+        } catch {console.warn('Specific is out of bounds')}
+        // const maxRedraws = specific.reduce((prev, current)=> Math.max(prev, current.length),0)
+        // const specificT = Array(maxRedraws).fill().map((v,i)=>{
+        //     return Array(specific.length).fill().map((v2,j)=>specific[j]?.[i]);
+        // })
+        /*for(const color in prob){
+            let p = prob[color].map((deckArr,mdeck)=> deckArr.map((diceArr,mdice)=> 
+                diceArr.reduce((prev, rerollsArr,rerollsUsed)=> {
+                    if(rerollsUsed <= rerolls) {
+                        const atLeastWithReroll = rerollsArr.reduce((prevProb,scoreProb,score)=>{
+                            if(score >= atLeast) prevProb += scoreProb||0;
+                            return prevProb;
+                        },0)
+                        prev = Math.max(prev,atLeastWithReroll)
+                    }
                     return prev;
                 },0)
-            ));
+            ))
             loadTableList(`Exact ${color}`,p, ['deck→<br>dice⤵',...Array.fromRange(0,p.length-1,1)]);
-        }
+        }*/
     }
 
     let oldDeck={};
@@ -144,10 +174,10 @@
 
         function updateProb(prob){
             oldProb = prob;
-            updateUI(oldProb, obj.rerolls, obj.atLeast);
+            updateUI(oldProb, obj.rerolls, obj.atLeast, obj.wdice, obj.wdeck, obj.ydeck, obj.ydice, obj.rdeck, obj.rdice,obj.bdeck, obj.bdice);
         }
 
-        if(obj.deck.compare(oldDeck)) updateUI(oldProb, obj.rerolls, obj.atLeast);
+        if(obj.deck.compare(oldDeck)) updateUI(oldProb, obj.rerolls, obj.atLeast, obj.wdice, obj.wdeck, obj.ydeck, obj.ydice, obj.rdeck, obj.rdice,obj.bdeck, obj.bdice);
         else {
             oldDeck = obj.deck.copy();
             startWork(probCheckPlayer,'scripts/playerProb.mjs',[cardCopy], updateProb);
