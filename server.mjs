@@ -4,6 +4,7 @@ applyObjHelperFuncions();
 
 import fs from 'fs';
 import https from 'https';
+import http from 'http';
 import express from 'express';
 const app = express();
 
@@ -63,7 +64,7 @@ app.post("/json/player",express.json(),function(req,res){
 app.use(express.static('public',{extensions:['html']}));
 app.use(express.static('rules',{index:false,extensions:['html']}));
 
-let server = app;
+let server;
 let serverMode = 'HTTP';
 try{
     const credentials = {
@@ -74,6 +75,7 @@ try{
     serverMode = 'HTTPS';
 } catch (e){
     console.log(e);
+    server = http.createServer(app);
 }
 const httpServer = server.listen(secrets.httpPort, () => console.log(`${serverMode} Listening on ${secrets.httpPort}`));
 
