@@ -1,5 +1,5 @@
 import { applyObjHelperFuncions } from "./public/scripts/objHelpers.mjs";
-import {secrets} from "./secrets.mjs";
+import {secrets} from "./secrets/secrets.mjs";
 applyObjHelperFuncions();
 
 import fs from 'fs';

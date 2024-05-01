@@ -7,7 +7,7 @@
     "test":"curl -d \"{\"\"white_deck\"\":{\"\"2\"\":3}}\" -H \"Content-Type: application/json\" -X POST localhost:3000/json/player",
     "testPowerShell": "Invoke-WebRequest -Uri http://127.0.0.1:3000/json/player -Method POST -Body '{\"white_deck\":{\"1\":3}}' -ContentType \"application/json\"",
     "start": "node server.mjs",
-    "preinstall": "git update-index --skip-worktree ./secrets.mjs"
+    "preinstall": "git update-index --skip-worktree ./secrets/*"
   },
   "author": "",
   "license": "ISC",
