@@ -175,8 +175,6 @@ body{
 
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: rgb(37, 37, 37);
         background-image: url("../images/darkBackground.jpg");
-        color: rgb(210, 210, 210);
     }
 }

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width , initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/darkTheme.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/chart.css">
+</head>
+
+<body>
+    <div class="test"></div>
+
+<div uiID="monster" class="cardui">
+    <div uiID="deck" class="hcontainer">
+        <div uiID="white">
+            <div uiID="discard" class = "vcontainer">
+                <div class="white reset"></div>
+                <div uiID="0" class="white card tile"><div class="value" style="display: none;">0</div><div uiID="discarded" class="count">0/6</div></div>
+                <div uiID="1" class="white card tile"><div class="value">1</div><div uiID="discarded" class="count">0/6</div></div>
+                <div uiID="2" class="white card tile"><div class="value">2</div><div uiID="discarded" class="count">0/3</div></div>
+                <div class="tile"></div>
+                <div uiID="w" class="white crit card tile"><div class="value">2</div><div uiID="discarded" class="count">0/3</div></div>
+            </div>
+        </div>
+
+        <div uiID="yellow">
+            <div uiID="discard" class = "vcontainer">
+                <div class="yellow reset"></div>
+                <div uiID="0" class="yellow card tile"><div class="value" style="display: none;">0</div><div uiID="discarded" class="count">0/6</div></div>
+                <div uiID="1" class="yellow card tile"><div class="value">1</div><div uiID="discarded" class="count">0/3</div></div>
+                <div uiID="2" class="yellow card tile"><div class="value">2</div><div uiID="discarded" class="count">0/3</div></div>
+                <div uiID="3" class="yellow card tile"><div class="value">3</div><div uiID="discarded" class="count">0/3</div></div>
+                <div uiID="y" class="yellow crit card tile"><div class="value">3</div><div uiID="discarded" class="count">0/3</div></div>
+            </div>
+        </div>
+
+        <div uiID="red">
+            <div uiID="discard" class = "vcontainer">
+                <div class="red reset"></div>
+                <div uiID="0" class="red card tile"><div class="value" style="display: none;">0</div><div uiID="discarded" class="count">0/6</div></div>
+                <div uiID="2" class="red card tile"><div class="value">2</div><div uiID="discarded" class="count">0/3</div></div>
+                <div uiID="3" class="red card tile"><div class="value">3</div><div uiID="discarded" class="count">0/6</div></div>
+                <div class="tile"></div>
+                <div uiID="r" class="red crit card tile"><div class="value">4</div><div uiID="discarded" class="count">0/3</div></div>
+            </div>
+        </div>
+
+        <div uiID="black">
+            <div uiID="discard" class = "vcontainer">
+                <div class="black reset"></div>
+                <div uiID="0" class="black card tile"><div class="value" style="display: none;">0</div><div uiID="discarded" class="count">0/6</div></div>
+                <div uiID="3" class="black card tile"><div class="value">3</div><div uiID="discarded" class="count">0/6</div></div>
+                <div uiID="4" class="black card tile"><div class="value">4</div><div uiID="discarded" class="count">0/3</div></div>
+                <div class="tile"></div>
+                <div uiID="b" class="black crit card tile"><div class="value">5</div><div uiID="discarded" class="count">0/3</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mightcontainer" >
+        <div uiID="monster"><div uiID="deck"><div uiID="white"><div uiID="might" class="white mWhite might"><div uiID="discarded" class="mcount">2</div></div></div></div></div>
+        <div uiID="monster"><div uiID="deck"><div uiID="yellow"><div uiID="might" class="yellow mYellow might"><div uiID="discarded" class="mcount">2</div></div></div></div></div>
+        <div uiID="monster"><div uiID="deck"><div uiID="red"><div uiID="might" class="red mRed might"><div uiID="discarded" class="mcount">2</div></div></div></div></div>
+        <div uiID="monster"><div uiID="deck"><div uiID="black"><div uiID="might" class="black mBlack might"><div uiID="discarded" class="mcount">0</div></div></div></div></div>
+    </div>
+</div>
+
+<script type="module">
+    import setCalcFn from "/scripts/main.mjs";
+    import {getStoredUIvalue} from "/scripts/storage.mjs"
+    import { startWork } from "/scripts/worker.mjs";
+    import { probCheckMonster } from "/scripts/monsterProb.mjs";
+    import {applyArrayHelperFuncions} from "/scripts/arrayHelpers.mjs"
+    import { loadTableGraphic, loadTableList} from "/scripts/table.mjs";
+    import {applyObjHelperFuncions} from "/scripts/objHelpers.mjs"
+    applyArrayHelperFuncions();
+
+
+    function updateUI(prob){
+        let chanceAtleast = prob.reversecumsum();
+
+        loadTableGraphic("Graph of exactly x", [prob]);
+        loadTableGraphic("Graph of at least x", [chanceAtleast]);
+        loadTableList("Table of exactly x",[prob], ['x','% to get x']);
+        loadTableList("Table of at least x or more",[chanceAtleast], ['x','% to get x+']);
+
+        let defense = Array.fromRange(1,18,1); //calculate for defense values between 2 and 10
+        let damageProb = defense.map((e)=>{return prob.collectBy((index)=>Math.floor(index/e))});
+        let damageProbT = damageProb.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
+
+        loadTableList("Damage for given Defense",damageProbT, ['defense→ <br> damage⤵', ...defense]);
+        loadTableList("Damage given Defense<br>Full Table",damageProb, ['defense→ <br> damage⤵', ...defense]);
+    }
+
+    function monsterCalc(){
+        let obj = getStoredUIvalue({monster:undefined});
+        console.log('do calcs', obj);
+        //cardCopy = {white:{deckCards:[1,1,2,2],discardCards:[1,3],toDraw:1}}
+        let cardCopy = obj.deck.map(d=>{
+            let deckCards = [];
+            let discardCards = [];
+            for(const prop in d.discard){
+                let c = d.discard[prop];
+                deckCards = deckCards.concat(Array(c.max-c.discarded).fill(c.points));
+                discardCards = discardCards.concat(Array(c.discarded).fill(c.points));
+            }
+            return {
+                deckCards,
+                discardCards,
+                toDraw: d.might
+            }
+        })
+        startWork(probCheckMonster,'/scripts/monsterProb.mjs',[cardCopy, obj.removeMax, obj.rerollZeros], updateUI);
+    }
+
+    setCalcFn(monsterCalc);
+    monsterCalc();
+</script>

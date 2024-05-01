@@ -60,8 +60,8 @@ app.post("/json/player",express.json(),function(req,res){
     }
 })
 
-app.use(express.static('public'));
-app.use(express.static('rules'));
+app.use(express.static('public',{extensions:['html']}));
+app.use(express.static('rules',{index:false,extensions:['html']}));
 
 let server = app;
 let serverMode = 'HTTP';

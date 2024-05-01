@@ -89,10 +89,3 @@ legend{
     justify-content: center;
     margin-inline:4px;
 }
-
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #181818;
-        color: #ccc;
-    }
-}
