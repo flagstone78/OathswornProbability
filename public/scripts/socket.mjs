@@ -26,7 +26,8 @@ function connectSocket(onRecieveObjectFn){
         //double check that the socket is open (websocket will close after a minute of inactivity)
         if(socket.readyState == WebSocket.OPEN) resolve(socket);
         else {
-            let s =  new WebSocket('ws://'+hostname+':'+websocketPort);
+            const protocol = (window.location.protocol === 'https:')? 'wss' : 'ws';
+            const s =  new WebSocket(`${protocol}://${hostname}:${websocketPort}`);
             // Connection opened
             s.addEventListener("open", (event) => {
                 resolve(s);
