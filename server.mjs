@@ -1,7 +1,9 @@
 import { applyObjHelperFuncions } from "./public/scripts/objHelpers.mjs";
-import {secrets} from "./secrets.mjs"
+import {secrets} from "./secrets.mjs";
 applyObjHelperFuncions();
 
+import fs from 'fs';
+import https from 'https';
 import express from 'express';
 const app = express();
 
@@ -66,7 +68,20 @@ app.post("/json/player",express.json(),function(req,res){
 // })
 app.use(express.static('public'));
 app.use(express.static('rules'));
-const httpServer = app.listen(secrets.httpPort, () => console.log(`HTTP Listening on ${secrets.httpPort}`));
+
+let server = app;
+let serverMode = 'HTTP';
+try{
+    const credentials = {
+        key:  fs.readFileSync(secrets.sslKeyPath,'utf8'), 
+        cert: fs.readFileSync(secrets.sslCertificatePath,'utf8')
+    };
+    server = https.createServer(credentials, app);
+    serverMode = 'HTTPS';
+} catch (e){
+    console.log(e);
+}
+const httpServer = server.listen(secrets.httpPort, () => console.log(`${serverMode} Listening on ${secrets.httpPort}`));
 
 let clientIdCounter = new Uint8Array(1); //max of 256 connections
 import { WebSocketServer } from 'ws';
