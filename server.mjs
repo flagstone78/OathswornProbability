@@ -44,10 +44,6 @@ app.post("/admin/restart", express.text(), function(req,res){
     } else res.sendStatus(401);
 })
 
-app.get("/admin/wsPort",function(req,res){
-    res.send(JSON.stringify(secrets.wsPort));
-})
-
 app.get("/json/player",function(req,res){
     res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
 })
@@ -63,9 +59,7 @@ app.post("/json/player",express.json(),function(req,res){
         res.send(JSON.stringify(cacheToIvon(cachedValues.player)));
     }
 })
-// app.get("/json/monster",function(req,res){
-//     res.send(JSON.stringify(cachedValues.monster));
-// })
+
 app.use(express.static('public'));
 app.use(express.static('rules'));
 
@@ -85,7 +79,15 @@ const httpServer = server.listen(secrets.httpPort, () => console.log(`${serverMo
 
 let clientIdCounter = new Uint8Array(1); //max of 256 connections
 import { WebSocketServer } from 'ws';
-const sockserver = new WebSocketServer({ port: secrets.wsPort },()=>console.log(`Web Socket Listening on ${secrets.wsPort}`))
+const sockserver = new WebSocketServer({ noServer:true },()=>console.log(`Web Socket Listening on ${secrets.wsPort}`))
+httpServer.on('upgrade',
+    function upgrade(request, socket, head){
+        sockserver.handleUpgrade(request,socket,head,
+            function done(ws){ sockserver.emit('connection',ws,request);}
+        )
+    }
+);
+
 sockserver.on('connection', ws => {
   console.log('New client connected!')
   let id = clientIdCounter[0]++;

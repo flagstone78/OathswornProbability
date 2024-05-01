@@ -1,6 +1,4 @@
 import { isObject } from "./objHelpers.mjs";
-let websocketPort = await fetch(`${window.location.origin}/admin/wsPort`,{method:'GET'}).then(res=>res.json());
-let hostname = location.hostname || "localhost";
 let socket={};
 
 export function initializeSocket(onRecieveObjectFn){
@@ -27,7 +25,7 @@ function connectSocket(onRecieveObjectFn){
         if(socket.readyState == WebSocket.OPEN) resolve(socket);
         else {
             const protocol = (window.location.protocol === 'https:')? 'wss' : 'ws';
-            const s =  new WebSocket(`${protocol}://${hostname}:${websocketPort}`);
+            const s =  new WebSocket(`${protocol}://${window.location.host}`);
             // Connection opened
             s.addEventListener("open", (event) => {
                 resolve(s);
