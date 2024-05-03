@@ -26,7 +26,7 @@
             </fieldset>
             <div class="gridContainer" uiID="">
                 <!-- <label>Deck Average:</label> <div>0</div> -->
-                <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div>
+                <!-- <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div> -->
                 <label>Draw Cards:</label><div class="counter" store sync uiID="might">0</div>
             </div>
             
@@ -43,7 +43,7 @@
             </fieldset>
             <div class="gridContainer" uiID="">
                 <!-- <label>Deck Average:</label> <div>0</div> -->
-                <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div>
+                <!-- <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div> -->
                 <label>Draw Cards:</label>    <div class="counter" store sync uiID="might">0</div>
             </div>
         </fieldset>
@@ -60,7 +60,7 @@
             </fieldset>
             <div class="gridContainer" uiID="">
                 <!-- <label>Deck Average:</label> <div>0</div> -->
-                <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div>
+                <!-- <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div> -->
                 <label>Draw Cards:</label>    <div class="counter" store sync uiID="might">0</div> 
             </div>
         </fieldset>
@@ -75,7 +75,7 @@
             </fieldset>
             <div class="gridContainer" uiID="">
                 <!-- <label>Deck Average:</label><div class="numberResult" uiID="average">0</div> -->
-                <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div>
+                <!-- <label>Reroll Zeros:</label>   <div class="counter" store sync uiID="rerollZeros">0</div> -->
                 <label>Draw Cards:</label>   <div class="counter" store sync uiID="might">0</div>
             </div>
         </fieldset>
@@ -88,7 +88,7 @@
 </div>
 
 <div uiID="monster" class="flexContainer">
-    <div uiID=""><input class="monsterCheckbox" id="c5" type="checkbox" store uiID="removeMax"> <label for="c5">Remove Max Value</label></div>
+    <div class="gridContainer" uiID=""><div>Remove Max</div><div class="counter" store uiID="removeMax">0</div></div>
     <div uiID=""><input class="monsterCheckbox" id="c6" type="checkbox" store uiID="rerollZeros"> <label for="c6">Reroll All Zeros</label></div>
     <div class="gridContainer" uiID=""><label>Mob multiplier:</label> <div class="counter" min="1" store uiID="mobMultiplier">1</div></div>
 </div>
@@ -104,6 +104,8 @@
     applyArrayHelperFuncions();
 
     function updateUI(prob){
+        prob = prob.map(v=>v*100);
+        console.log(prob);
         let chanceAtleast = prob.reversecumsum();
 
         loadTableGraphic("Graph of exactly x", [prob]);
@@ -132,6 +134,7 @@
                 discardCards = discardCards.concat(Array(c.discarded).fill(c.points));
             }
             return {
+                deck: d.discard,
                 deckCards,
                 discardCards,
                 toDraw: d.might*obj.mobMultiplier,

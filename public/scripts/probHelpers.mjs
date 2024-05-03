@@ -109,13 +109,40 @@ function numToIndexArray(inum,maxValStates){
 }
 
 export function drawAll(pile, callback, additionalArgs=[]){
-    const pileStates = Array.from(pile,v=>v+1);
-    const pileCombinations = pileStates.reduce(mult,1);
+    const pileStates = Array(pile.length);
+    let pileCombinations = 1;
+    for(let i=0;i<pile.length;i++){
+        const comb = pile[i]+1;
+        pileCombinations *= comb;
+        pileStates[i] = comb;
+    }
+
     for(let i=0;i<pileCombinations;i++){
         const indexArr = numToIndexArray(i,pileStates);
-        callback(indexArr,...additionalArgs);
+        callback(indexArr,additionalArgs);
     }
 }
+
+export function forEveryCombination(combinationLists,callback){
+    const lengths = combinationLists.map(v=>v.length-1);
+    function convertToValue(indexArr){
+        const valueArr = Array(indexArr.length);
+        for(let i=0;i<valueArr.length;i++){
+            valueArr[i] = combinationLists[i][indexArr[i]];
+        }
+        callback(valueArr);
+    }
+    drawAll(lengths, convertToValue)
+}
+
+/*
+export function mightCount(numCardTypes,might){
+    return nCr(might+numCardTypes-1,numCardTypes-1)
+}
+
+function nCr(n,r){
+    return factorial(n)/(factorial(r)*factorial(n-r));
+}*/
 
 function sum(prev,v){return prev+v;}
 function mult(prev,v){return prev*v;}

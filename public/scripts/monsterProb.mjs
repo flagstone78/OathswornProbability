@@ -1,12 +1,14 @@
 import {applyArrayHelperFuncions} from "./arrayHelpers.mjs"
+import { forEveryCombination, drawDeck} from "./probHelpers.mjs";
 console.log("monsterprob loaded")
 self.onmessage = (e) => {
     //console.log('Worker: Message received from main script');
-    let res = probCheckMonster(...e.data);
-    postMessage(res);
+    //const res = probCheckMonster(...e.data);
+    const res2 = monsterProb(...e.data);
+    postMessage(res2);
 }
 
-function probCheckMonster(cards, removeMax=false, rerollAllZeros=false, iterations=1000000){
+export function probCheckMonster(cards, removeMax=false, rerollAllZeros=false, iterations=1000000){
     applyArrayHelperFuncions();
     if(cards == undefined) return [];
     console.log(cards);
@@ -43,55 +45,73 @@ function probCheckMonster(cards, removeMax=false, rerollAllZeros=false, iteratio
     }
 
     let prob = scoreCount.map(val=>{
-        return val*100/iterations;
+        return val/iterations;
     });
 
     return prob;
 }
 
 
-/*
 //draws exact number of cards; ignores redraws, crits, and dice rolling
-function monsterProb(cards = cardsByColors){
-    //set up decks
-    let deckCards={};
-    let discardCards={};
-    let toDraw={};
-    let deck = {};
-    for(const [k,v] of Object.entries(cards)){
-        //creates arrays containing the value of each card. strips out isFail and isCrit flags
-        deckCards[k] = v.reduce((accu,current)=>{return accu.concat(Array(current.numInDeck).fill(current.value))},[]);
-        discardCards[k] = v.reduce((accu,current)=>{return accu.concat(Array(current.numInDiscard).fill(current.value))},[]);
-        toDraw[k] = v.toDraw;
-        deck[k] = deckCards[k];
-    }
+export function monsterProb(cards, removeMaxCards=0, removeAllZeros=false){
+    if(cards == undefined) return [];
+    console.log(cards);
 
-    //get minimum starting score
-    let scoreCount = [];
-    let minscore = 0;
-    for(const [k,v] of Object.entries(cards)){
-        if(toDraw[k] >= deck[k].length){ //if we pick the whole deck, sum the whole deck then use the discard pile
-            minscore += deck[k].sum(); //sum score from the deck
-            toDraw[k] -= deck[k].length; //pick less cards from the discard pile
-            deck[k] = discardCards[k]; //switch deck to discard pile
-        }
-    }
-
-    //only one possible score when drawing 0. its 0. nCr and nPr of zero result in 1.
-    for(const [k,v] of Object.entries(cards)){
-        if(toDraw[k] >= deck[k].length){ console.error("trying to pick too many cards!");}
+    const decks = Object.entries(cards);
+    //const decksName = decks.map(v=>v[0]);
+    const decksDesc = decks.map(v=>v[1]);
+    for(const v of decksDesc){ //for each deck
+        //ensure cards are sorted from least to highest points
+        const sortedKeys = Object.keys(v.deck).sort((a,b)=>{
+            const vala = v.deck[a].points - v.deck[a].isfail||0 + v.deck[a].iscrit||0;
+            const valb = v.deck[b].points - v.deck[b].isfail||0 + v.deck[b].iscrit||0;
+            return vala - valb;
+        });
+        v.sortedKeys = sortedKeys;
         
-        //TODO: calc combinations of scores and add minimum
+        //calculate for draw pile
+        const might = v.toDraw;
+        const drawPile = sortedKeys.map(k=>v.deck[k].max-v.deck[k].discarded);
+        const discPile = sortedKeys.map(k=>v.deck[k].discarded);
+        if(removeAllZeros){
+            drawPile[0]=0;
+            discPile[0]=0;
+        }
+        v.deckProb = drawDeck(drawPile,discPile,might);
     }
 
+    const scoreProb = [];
+    const probs = decksDesc.map(v=>v.deckProb[v.toDraw]);
     
+    const points = decksDesc.flatMap(v=>v.sortedKeys.map(k=>v.deck[k].points));
+    const sortedPointsIndex = Array(points.length).fill().map((v,i)=>i).sort((a,b)=>points[b]-points[a]);
 
-    let curcolor='white';
-    console.log(deck[curcolor],toDraw[curcolor]);
+    forEveryCombination(probs,(picked)=>{
+        let totalProb = 1;
+        let totalCards = [];
+        for(let i=0;i<picked.length;i++){
+            const [prob, deck] = picked[i];
+            totalCards.push(...deck);
+            totalProb *= prob;
+        }
+        
+        //remove highest n cards
+        let removeMax = removeMaxCards;
+        for(let i=0;i<totalCards.length && removeMax>0;i++){
+            const highestCounti = sortedPointsIndex[i];
+            const highestCount = totalCards[highestCounti];
+            if(highestCount){
+                const rem = Math.min(highestCount,removeMax);
+                removeMax -= rem;
+                totalCards[highestCounti] -= rem;
+            }
+        }
 
-    //(scoreCount[score]) ? scoreCount[score]+=1 : scoreCount[score]=1; //increment count for score
-    
-    return scoreCount;
-}*/
-
-export{probCheckMonster};
+        let totalPoints = 0;
+        for(let i=0;i<totalCards.length;i++){
+            totalPoints += totalCards[i]*points[i];
+        }
+        scoreProb[totalPoints] = (scoreProb[totalPoints]||0) + totalProb;
+    })
+    return scoreProb;
+}
