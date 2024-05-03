@@ -12,7 +12,7 @@ function addUIProperties(e,onChangeFn, onClickFn){
     e.getValue = ()=>parseInt(displayElement.textContent);
     e.getUIobj= ()=>getElementUIobj(e, e.getValue());
     e.validate = (val)=> (val >= min && val != e.getValue());
-    e.serverSetValue = (val)=>{e.setValue(val)}
+    e.serverSetValue = (val)=>{if(e.sync) e.setValue(val)}
     function userSetValue(value){
         if(e.validate(value)){ //is new value
             e.setValue(value);

@@ -17,8 +17,10 @@ function addUIProperties(e, onChangeFn, onClickFn, onServerSetFn){
     displayElement.setValue = (value)=>e.setValue(value);
     displayElement.serverSetValue = (value)=>e.serverSetValue(value);
     e.serverSetValue = (val)=>{
-        e.queue(val);
-        onServerSetFn(e);
+        if(e.sync){
+            e.queue(val);
+            onServerSetFn(e);
+        }
     }
     function userSetValue(newVal){
         if(e.validate(newVal)) {
