@@ -1,6 +1,17 @@
 function applyArrayHelperFuncions(){
-    Object.defineProperty(Array.prototype,'sum',{value: function(){return this.reduce((prev,cur)=>{return prev+cur},0)}});
-    Object.defineProperty(Array.prototype,'cumsum',{value: function(){return this.map((sum => value => sum += (value)?value:0)(0))}});
+    Object.defineProperty(Array.prototype,'sum',{value: function(){
+        let sum = 0;
+        for(let i=0; i<this.length; i++) sum += this[i]||0;
+        return sum
+    }});
+    Object.defineProperty(Array.prototype,'cumsum',{value: function(){
+        let sum = 0;
+        const ret = Array.from(this);
+        for(let i=0; i<ret.length; i++){
+            ret[i] = (sum += this[i]||0);
+        }
+        return ret
+    }});
     Object.defineProperty(Array.prototype,'reversecumsum',{value: function(){return [...this].reverse().cumsum().reverse()}});
     Object.defineProperty(Array.prototype,'shuffle',{value: function(numToShuffle=this.length){
         for (let i = this.length - 1; i >= this.length-numToShuffle; i--) {
