@@ -20,23 +20,37 @@ import { storeUIobj, getStoredUIvalue } from "./storage.mjs";
 
 let invalidIdChars = /[\s(),:<>]/g;
 
+/* creates an div with the following structure:
+    <table>
+        <caption>${chartName}</caption>
+        <tbody>
+            <tr class="bars"></tr>
+            <tr class="values"></tr>
+        </tbody>
+    </table>;*/
 function barChartHtml(chartName, chartId){
     if((invalidIdChars).test(chartId)) throw "bar chart id cannot contain spaces";
-    let elem = document.createElement('div');
+    const elem = document.createElement('div');
     elem.className = "barChart";
     elem.id = chartId;
-    elem.innerHTML = 
-        `<table>
-            <caption>${chartName}</caption>
-            <tbody>
-                <tr class="bars"></tr>
-                <tr class="values"></tr>
-            </tbody>
-        </table>`;
-    elem.onclick = ()=>{
+
+    const table = document.createElement('table');
+    const caption = document.createElement('caption');
+    caption.innerText = chartName;
+    caption.onclick = ()=>{
         toggleTable(elem)
         storeUIobj({[chartId]:elem.querySelector('tbody').checkVisibility()})
     }
+    const tbody = document.createElement('tbody');
+    const bars = document.createElement('tr');
+    bars.classList.add('bars');
+    const values = document.createElement('tr');
+    values.classList.add('values');
+    tbody.appendChild(bars);
+    tbody.appendChild(values);
+    table.appendChild(caption);
+    table.appendChild(tbody);
+    elem.appendChild(table);
     return elem; 
 }
 
@@ -69,32 +83,33 @@ function loadTableGraphic(chartName, objArr) {
     table.querySelector('.values').innerHTML = headers;
 }
 
-/* <div id="monsterTableList" class="dataTable">
+/* Create a div with the following structure:
+<div id="monsterTableList" class="dataTable">
 <table>
-    <caption onclick="toggleTable(this)" style="white-space: nowrap;">Chance of y Damage or Less given x Defence</caption>
+    <caption>Chance of y Damage or Less given x Defence</caption>
+    <thead><tr><th>axis labels</th> <th>x1 label</th> <th>x2 label</th> <th>x3 label</th></tr></thead>
     <tbody>
-        <tr><th>axis labels</th> <th>x1 label</th> <th>x2 label</th> <th>x3 label</th></tr>
         <tr><th> y1 label </th> <td>y1x1</td> <td>y1x2</td></tr>
         <tr><th> y2 label </th> <td>y2x1</td> <td>y2x2</td></tr>
     </tbody>
 </table>
 </div> */
-
 function tableHtml(tableName, tableId){
     if((invalidIdChars).test(tableId)) throw "bar chart id cannot contain spaces";
-    let elem = document.createElement('div');
-    elem.className = "dataTable";
+    const elem = document.createElement('div');
+    elem.classList.add("dataTable");
     elem.id = tableId;
-    elem.innerHTML = 
-        `<table>
-        <caption><span>${tableName}</span></caption>
-        <thead></thead>
-        <tbody></tbody>
-        </table>`;
-    elem.onclick = ()=>{
+    const table = document.createElement('table');
+    const caption = document.createElement('caption');
+    caption.innerText = tableName;
+    caption.onclick = ()=>{
         toggleTable(elem);
         storeUIobj({[tableId]:elem.querySelector('tbody').checkVisibility()})
     }
+    table.appendChild(caption);
+    table.appendChild(document.createElement('thead'));
+    table.appendChild(document.createElement('tbody'));
+    elem.appendChild(table);
     return elem;
 }
 
