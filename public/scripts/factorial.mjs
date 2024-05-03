@@ -5,7 +5,6 @@ function _factorial(n){
     return cache[n];
 }
 export function factorial(n){
-    if(n>18) throw "Factorial too large for standard numbers";
     if(n<0) return Infinity; //throw "Cannot have negative factorial";
     const val = cache[n];
     return (val !== undefined) ? val : _factorial(n);
