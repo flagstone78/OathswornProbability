@@ -162,3 +162,7 @@
 .dataTable tr:nth-child(odd){
     background-color: rgb(25, 25, 25);
 }
+
+.dataTable.hidden, .barChart.hidden{
+    display: none;
+}

@@ -92,6 +92,9 @@
     <div uiID=""><input class="monsterCheckbox" id="c6" type="checkbox" store uiID="rerollZeros"> <label for="c6">Reroll All Zeros</label></div>
     <div class="gridContainer" uiID=""><label>Mob multiplier:</label> <div class="counter" min="1" store uiID="mobMultiplier">1</div></div>
 </div>
+
+<div uiID="monster"><input class="monsterCheckbox" id="c7" type="checkbox" store uiID="overlayMaxRemoved"> <label for="c7">Overlay Max Removed</label></div>
+
 </body>
 
 <script type="module">
@@ -100,25 +103,48 @@
     import { startWork } from "/scripts/worker.mjs";
     import { probCheckMonster } from "/scripts/monsterProb.mjs";
     import {applyArrayHelperFuncions} from "/scripts/arrayHelpers.mjs"
-    import { loadTableGraphic, loadTableList} from "/scripts/table.mjs";
+    import { loadTableGraphic, loadTableList, showTable} from "/scripts/table.mjs";
     applyArrayHelperFuncions();
 
-    function updateUI(prob){
-        prob = prob.map(v=>v*100);
+    function updateUI(prob=[], probMaxRemoved=[]){
+        prob = prob.map(w=>w*100);
+        probMaxRemoved = probMaxRemoved.map(w=>w*100);
         console.log(prob);
-        let chanceAtleast = prob.reversecumsum();
-
-        loadTableGraphic("Graph of exactly x", [prob]);
-        loadTableGraphic("Graph of at least x", [chanceAtleast]);
-        loadTableList("Table of exactly x",[prob], ['x','% to get x']);
-        loadTableList("Table of at least x or more",[chanceAtleast], ['x','% to get x+']);
-
-        let defense = Array.fromRange(1,18,1); //calculate for defense values between 2 and 10
-        let damageProb = defense.map((e)=>{return prob.collectBy((index)=>Math.floor(index/e))});
-        let damageProbT = damageProb.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
+        const chanceAtleast = prob.reversecumsum();
+        const chanceAtleastMr = probMaxRemoved.reversecumsum();
+        const defense = Array.fromRange(1,18,1); //calculate for defense values between 2 and 10
+        const damageProb = defense.map((e)=>{return prob.collectBy((index)=>Math.floor(index/e))});
+        const damageProbT = damageProb.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
 
         loadTableList("Damage for given Defense",damageProbT, ['defense→ <br> damage⤵', ...defense]);
-        loadTableList("Damage given Defense<br>Full Table",damageProb, ['defense→ <br> damage⤵', ...defense]);
+        if(probMaxRemoved.length>0){
+            const damageProbmr = defense.map((e)=>{return probMaxRemoved.collectBy((index)=>Math.floor(index/e))});
+            const damageProbTmr = damageProbmr.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
+            loadTableList("Damage for given Defense Max Removed",damageProbTmr, ['defense→ <br> damage⤵', ...defense]);
+            showTable("Damage for given Defense Max Removed", true);
+        } else {
+            showTable("Damage for given Defense Max Removed", false);
+        }
+
+
+        const toPlot = probMaxRemoved.length? {
+                exact:[prob,probMaxRemoved], 
+                exactHeader:['x','% to get x','max removed'],
+                atLeast: [chanceAtleast, chanceAtleastMr],
+                atLeastHeader: ['x','% to get x+', 'max removed']
+            } : {
+                exact:[prob], 
+                exactHeader:['x','% to get x'],
+                atLeast: [chanceAtleast],
+                atLeastHeader: ['x','% to get x+']
+            };
+
+        loadTableGraphic("Graph of exactly x", toPlot.exact);
+        loadTableGraphic("Graph of at least x", toPlot.atLeast);
+        loadTableList("Table of exactly x", toPlot.exact, toPlot.exactHeader);
+        loadTableList("Table of at least x or more",toPlot.atLeast, toPlot.atLeastHeader);
+
+        loadTableList("Damage given Defense Full Table",damageProb, ['defense→ <br> damage⤵', ...defense]);
     }
 
     function monsterCalc(){
@@ -126,22 +152,15 @@
         console.log('do calcs', obj);
         //cardCopy = {white:{deckCards:[1,1,2,2],discardCards:[1,3],toDraw:1}}
         let cardCopy = obj.deck.map(d=>{
-            let deckCards = [];
-            let discardCards = [];
-            for(const prop in d.discard){
-                let c = d.discard[prop];
-                deckCards = deckCards.concat(Array(c.max-c.discarded).fill(c.points));
-                discardCards = discardCards.concat(Array(c.discarded).fill(c.points));
-            }
             return {
                 deck: d.discard,
-                deckCards,
-                discardCards,
                 toDraw: d.might*obj.mobMultiplier,
                 rerollZeros:d.rerollZeros
             }
         })
-        startWork(probCheckMonster,'scripts/monsterProb.mjs',[cardCopy, obj.removeMax, obj.rerollZeros], updateUI);
+        let parameterLists = [[cardCopy, obj.removeMax, obj.rerollZeros]];
+        if(obj.overlayMaxRemoved)parameterLists.push([cardCopy, obj.removeMax+1, obj.rerollZeros])
+        startWork(probCheckMonster,'scripts/monsterProb.mjs',parameterLists).then(res=> updateUI(...res));
     }
 
     setCalcFn(monsterCalc);

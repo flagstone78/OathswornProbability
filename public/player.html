@@ -181,7 +181,7 @@
         if(obj.deck.compare(oldDeck)) updateUI(oldProb, obj.rerolls, obj.atLeast, obj.wdice, obj.wdeck, obj.ydeck, obj.ydice, obj.rdeck, obj.rdice,obj.bdeck, obj.bdice);
         else {
             oldDeck = obj.deck.copy();
-            startWork(probCheckPlayer,'scripts/playerProb.mjs',[cardCopy], updateProb);
+            startWork(probCheckPlayer,'scripts/playerProb.mjs',[[cardCopy]]).then(res=>updateProb(...res));
         }
     }
 

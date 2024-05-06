@@ -8,8 +8,28 @@ self.onmessage = (e) => {
     postMessage(res2);
 }
 
-export function probCheckMonster(cards, removeMax=false, rerollAllZeros=false, iterations=1000000){
+export function probCheckMonster(disc, iterations=1000000){
     applyArrayHelperFuncions();
+    //cardCopy = {white:{deckCards:[1,1,2,2],discardCards:[1,3],toDraw:1}}
+    const cards = disc.deck.map(d=>{
+        let deckCards = [];
+        let discardCards = [];
+        for(const prop in d.discard){
+            let c = d.discard[prop];
+            deckCards = deckCards.concat(Array(c.max-c.discarded).fill(c.points));
+            discardCards = discardCards.concat(Array(c.discarded).fill(c.points));
+        }
+        return {
+            toDraw: d.might*disc.mobMultiplier,
+            deckCards,
+            discardCards,
+            rerollZeros:d.rerollZeros
+        }
+    })
+    const removeMax = disc.removeMax;
+    const rerollAllZeros = disc.rerollZeros;
+
+    
     if(cards == undefined) return [];
     console.log(cards);
     //count scores over many iterations

@@ -1,18 +1,21 @@
 //puts heavy calculation on the webworker. falls back to running inline
 let myWorker={terminate:function(){}};
-function startWork(fcn, functionFile, parameters, callBackFcn){
+async function startWork(fcn, functionFile, parameterLists){
     //if(false){
     if(window.Worker){
         myWorker.terminate(); //kill previous instance
         myWorker = new Worker(functionFile, { type: "module" }); //remake
-        document.myWorker = myWorker;
-        myWorker.onmessage = (e)=>{
-            //console.log('Message received from worker', e.data);
-            callBackFcn(e.data);
+        //document.myWorker = myWorker;
+        const ret = Array(parameterLists.length);
+        for(let i=0; i<ret.length; i++){
+            const workDone = new Promise((resolve)=>{myWorker.onmessage = (e)=>resolve(e.data)})
+            const parameters = parameterLists[i];
+            myWorker.postMessage(parameters);
+            ret[i] = await workDone;
         }
-        myWorker.postMessage(parameters);
+        return ret;
     } else {
-        callBackFcn(fcn(...parameters)); // do the work directly
+        return parameterLists.map(parameters=>fcn(...parameters)); // do the work directly
     }
 }
 

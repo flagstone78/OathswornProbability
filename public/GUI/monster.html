@@ -58,16 +58,16 @@
         </div>
     </div>
 
-    <div class="mightcontainer" >
-        <div uiID="monster"><div uiID="deck"><div uiID="white"><div uiID="might" class="white mWhite might"><div uiID="discarded" class="mcount">2</div></div></div></div></div>
-        <div uiID="monster"><div uiID="deck"><div uiID="yellow"><div uiID="might" class="yellow mYellow might"><div uiID="discarded" class="mcount">2</div></div></div></div></div>
-        <div uiID="monster"><div uiID="deck"><div uiID="red"><div uiID="might" class="red mRed might"><div uiID="discarded" class="mcount">2</div></div></div></div></div>
-        <div uiID="monster"><div uiID="deck"><div uiID="black"><div uiID="might" class="black mBlack might"><div uiID="discarded" class="mcount">0</div></div></div></div></div>
+    <div uiID="deck" class="mightcontainer" >
+        <div uiID="white" class="white mWhite might">   <div uiID="might" class="mcount">2</div></div>
+        <div uiID="yellow" class="yellow mYellow might"><div uiID="might" class="mcount">2</div></div>
+        <div uiID="red" class="red mRed might">         <div uiID="might" class="mcount">2</div></div>
+        <div uiID="black" class="black mBlack might">   <div uiID="might" class="mcount">0</div></div>
     </div>
 </div>
 
 <script type="module">
-    import setCalcFn from "/scripts/main.mjs";
+    import setCalcFn from "./main.mjs";
     import {getStoredUIvalue} from "/scripts/storage.mjs"
     import { startWork } from "/scripts/worker.mjs";
     import { probCheckMonster } from "/scripts/monsterProb.mjs";
@@ -78,6 +78,7 @@
 
 
     function updateUI(prob){
+        prob = prob.map(v=>v*100);
         let chanceAtleast = prob.reversecumsum();
 
         loadTableGraphic("Graph of exactly x", [prob]);
@@ -90,7 +91,7 @@
         let damageProbT = damageProb.map(p=>p.collectBy((index)=>((index < 6)? index : 6)));
 
         loadTableList("Damage for given Defense",damageProbT, ['defense→ <br> damage⤵', ...defense]);
-        loadTableList("Damage given Defense<br>Full Table",damageProb, ['defense→ <br> damage⤵', ...defense]);
+        loadTableList("Damage given Defense Full Table",damageProb, ['defense→ <br> damage⤵', ...defense]);
     }
 
     function monsterCalc(){
@@ -98,20 +99,13 @@
         console.log('do calcs', obj);
         //cardCopy = {white:{deckCards:[1,1,2,2],discardCards:[1,3],toDraw:1}}
         let cardCopy = obj.deck.map(d=>{
-            let deckCards = [];
-            let discardCards = [];
-            for(const prop in d.discard){
-                let c = d.discard[prop];
-                deckCards = deckCards.concat(Array(c.max-c.discarded).fill(c.points));
-                discardCards = discardCards.concat(Array(c.discarded).fill(c.points));
-            }
             return {
-                deckCards,
-                discardCards,
-                toDraw: d.might
+                deck: d.discard,
+                toDraw: d.might*obj.mobMultiplier,
+                rerollZeros:d.rerollZeros
             }
         })
-        startWork(probCheckMonster,'/scripts/monsterProb.mjs',[cardCopy, obj.removeMax, obj.rerollZeros], updateUI);
+        startWork(probCheckMonster,'/scripts/monsterProb.mjs',[[cardCopy, obj.removeMax, obj.rerollZeros]]).then(res=> updateUI(...res));
     }
 
     setCalcFn(monsterCalc);

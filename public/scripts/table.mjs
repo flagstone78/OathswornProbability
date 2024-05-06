@@ -55,13 +55,13 @@ function barChartHtml(chartName, chartId){
 }
 
 //objArr in the form of [{x1:y1, x2:y2},{x1:y1, x3:y3}]
-function loadTableGraphic(chartName, objArr) {
+export function loadTableGraphic(chartName, objArr) {
     let chartId = chartName.replaceAll(invalidIdChars,'_');
     let table = document.querySelector('#'+chartId);
     if(!table){
         table = barChartHtml(chartName, chartId);
         let toShow = getStoredUIvalue({[chartId]:undefined});
-        toShow? showTable(table) : hideTable(table);
+        toShow? showTableBody(table) : hideTableBody(table);
         document.body.appendChild(table);
     }
 
@@ -99,29 +99,37 @@ function tableHtml(tableName, tableId){
     const elem = document.createElement('div');
     elem.classList.add("dataTable");
     elem.id = tableId;
+    elem.appendChild(tabletable(tableName));
+    return elem;
+}
+
+function tabletable(tableName){
     const table = document.createElement('table');
     const caption = document.createElement('caption');
     caption.innerText = tableName;
-    caption.onclick = ()=>{
+    caption.onclick = (e)=>{
+        const elem = e.target.parentElement;
         toggleTable(elem);
-        storeUIobj({[tableId]:elem.querySelector('tbody').checkVisibility()})
+        storeUIobj({[elem.parentElement.id]:elem.querySelector('tbody').checkVisibility()})
     }
     table.appendChild(caption);
     table.appendChild(document.createElement('thead'));
     table.appendChild(document.createElement('tbody'));
-    elem.appendChild(table);
-    return elem;
+    return table;
 }
 
-function loadTableList(tableName, objArr, colHeader) {
+export function loadTableList(tableName, objArr, colHeader) {
     let tableId = tableName.replaceAll(invalidIdChars,'_');
-    let table = document.querySelector('#'+tableId);
+    let table = document.querySelector(`#${tableId}`);
     if(!table){
         table = tableHtml(tableName, tableId);
         document.body.appendChild(table);
-        let toShow = getStoredUIvalue({[tableId]:undefined});
-        toShow ? showTable(table) : hideTable(table);//table.querySelector('tbody').style.display='none';
     }
+    if(!table.classList.contains('dataTable')) table.classList.add('dataTable');
+    if(table.querySelector('table')==null) table.appendChild(tabletable(tableName));
+    
+    let toShow = getStoredUIvalue({[tableId]:undefined});
+    toShow ? showTableBody(table) : hideTableBody(table);//table.querySelector('tbody').style.display='none';
 
     let keys = new Set();
     objArr.forEach(e=>{Object.keys(e).forEach(k=>{
@@ -164,11 +172,11 @@ function loadTableList(tableName, objArr, colHeader) {
 function toggleTable(e){
     let tbody = e.querySelector('tbody');
     if(tbody.checkVisibility()){ 
-        hideTable(e);
-    } else {showTable(e)}
+        hideTableBody(e);
+    } else {showTableBody(e)}
 }
 
-function showTable(e){
+function showTableBody(e){
     let tbody = e.querySelector('tbody');
     let thead = e.querySelector('thead');
     let caption = e.querySelector('caption');
@@ -178,7 +186,7 @@ function showTable(e){
     caption.classList.remove('captionDown');
 }
 
-function hideTable(e){
+function hideTableBody(e){
     let tbody = e.querySelector('tbody');
     let thead = e.querySelector('thead');
     let caption = e.querySelector('caption');
@@ -188,4 +196,11 @@ function hideTable(e){
     caption.classList.add('captionDown');
 }
 
-export{loadTableGraphic, loadTableList}
+export function showTable(tableName, shouldShow){
+    const tableId = tableName.replaceAll(invalidIdChars,'_');
+    const table = document.querySelector(`#${tableId}`);
+    if(table){
+        if(shouldShow)table.classList.remove('hidden');
+        else table.classList.add('hidden');
+    }
+}

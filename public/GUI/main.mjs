@@ -1,9 +1,6 @@
-import {debounce, objectMap} from "./arrayHelpers.mjs"
-import { loadTableGraphic, loadTableList } from "./table.mjs";
-import{probCheckMonster} from "./monsterProb.mjs"
-import{initializeSocket} from "./socket.mjs"
-import { startWork } from "./worker.mjs";
-import{getElementUIobj, getElementsByObj, storeUIobj} from "./storage.mjs"
+import {debounce} from "/scripts/arrayHelpers.mjs"
+import{initializeSocket} from "/scripts/socket.mjs"
+import{getElementUIobj, getElementsByObj, storeUIobj} from "/scripts/storage.mjs"
 import {applyObjHelperFuncions, isObject} from "/scripts/objHelpers.mjs"
 applyObjHelperFuncions();
 
@@ -42,8 +39,10 @@ const mightHandler = {
         if(prop=="toDraw"){
             if(value<0) value=0;
             target.mightElement.innerHTML = value;
-            storeUIobj(target.mightElement.parentElement.getUIobj())
+            const ret = Reflect.set(target, prop, value, reciever);
+            storeUIobj(target.mightElement.getUIobj())
             dUpdateStats();
+            return ret;
         }
         return Reflect.set(target, prop, value, reciever);
     }
@@ -98,9 +97,11 @@ document.querySelectorAll(".might").forEach((re)=>{
     }
     let prox = new Proxy(arr, mightHandler);
 
-    re.getUIobj = ()=>getElementUIobj(re, prox.toDraw);
+    re.getUIobj = ()=>getElementUIobj(count, prox.toDraw);
     re.serverSetValue = (val)=>prox.toDraw = val;
     re.addEventListener('click', (e)=>{prox.toDraw += 1; sendUIobj(re.getUIobj()); e.stopPropagation()});
+    count.serverSetValue = re.serverSetValue;
+    count.getUIobj = re.getUIobj;
     count.addEventListener('click', (e)=>{prox.toDraw -= 1; sendUIobj(re.getUIobj()); e.stopPropagation()});
     storeUIobj(re.getUIobj());
 });
