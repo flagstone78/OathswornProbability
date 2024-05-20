@@ -4,7 +4,7 @@
   "description": "Simulates the deck mechanic in the game Oathsworn and calculates the probability of getting a desired result",
   "main": "server.mjs",
   "scripts": {
-    "test":"curl -d \"{\"\"white_deck\"\":{\"\"2\"\":3}}\" -H \"Content-Type: application/json\" -X POST localhost:3000/json/player",
+    "test": "curl -d \"{\"\"white_deck\"\":{\"\"2\"\":3}}\" -H \"Content-Type: application/json\" -X POST localhost:3000/json/player",
     "testPowerShell": "Invoke-WebRequest -Uri http://127.0.0.1:3000/json/player -Method POST -Body '{\"white_deck\":{\"1\":3}}' -ContentType \"application/json\"",
     "start": "node server.mjs",
     "preinstall": "git update-index --skip-worktree ./secrets/*"
@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.3",
+    "express": "^4.19.2",
     "ws": "^8.16.0"
   }
 }
